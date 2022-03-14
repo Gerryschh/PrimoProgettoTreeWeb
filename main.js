@@ -575,10 +575,11 @@ class ThirdPersonCameraDemo {
 
     const texturePlane = new THREE.TextureLoader().load('./resources/images/TreeWeb-logo-header-light.png');
 
-    const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(100, 100, 10, 10),
+   const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(10000, 10000, 10, 10),
         new THREE.MeshBasicMaterial({
-            map: texturePlane
+            /*map: texturePlane*/
+            color: 0x00FF00
           }));
     plane.castShadow = false;
     plane.receiveShadow = true;
@@ -588,9 +589,23 @@ class ThirdPersonCameraDemo {
     this._mixers = [];
     this._previousRAF = null;
 
+    this._LoadModel();
     this._LoadAnimatedModel();
     this._RAF();
   }
+
+  _LoadModel() {
+    const loader = new GLTFLoader();
+    loader.load('./resources/modelGLTF/2.gltf', (gltf) => {
+      gltf.scene.scale.set(10,10,10);
+        gltf.scene.traverse(c => {
+            c.castShadow = true;
+
+        });
+        
+        this._scene.add(gltf.scene);
+    });
+}
 
   _LoadAnimatedModel() {
     const params = {
