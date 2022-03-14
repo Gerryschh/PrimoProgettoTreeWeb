@@ -579,7 +579,7 @@ class ThirdPersonCameraDemo {
         new THREE.PlaneGeometry(10000, 10000, 10, 10),
         new THREE.MeshBasicMaterial({
             /*map: texturePlane*/
-            color: 0x00FF00
+            color: 0x002A00
           }));
     plane.castShadow = false;
     plane.receiveShadow = true;
