@@ -35,6 +35,7 @@ class BasicCharacterController {
     this._LoadModels();
   }
 
+  //It loads the character and its movements 
   _LoadModels() {
     const loader = new FBXLoader();
     loader.setPath('./resources/character/');
@@ -276,7 +277,7 @@ class CharacterFSM extends FiniteStateMachine {
   }
 };
 
-
+//Defining state class for Character's states
 class State {
   constructor(parent) {
     this._parent = parent;
@@ -287,7 +288,7 @@ class State {
   Update() {}
 };
 
-
+//DanceState (When the character is dancing)
 class DanceState extends State {
   constructor(parent) {
     super(parent);
@@ -338,7 +339,7 @@ class DanceState extends State {
   }
 };
 
-
+//WalkState(When the character is walking)
 class WalkState extends State {
   constructor(parent) {
     super(parent);
@@ -386,7 +387,7 @@ class WalkState extends State {
   }
 };
 
-
+//RunState(WHen the character is running)
 class RunState extends State {
   constructor(parent) {
     super(parent);
@@ -434,7 +435,7 @@ class RunState extends State {
   }
 };
 
-
+//IdleState(When the character is doing nothing)
 class IdleState extends State {
   constructor(parent) {
     super(parent);
@@ -471,7 +472,7 @@ class IdleState extends State {
   }
 };
 
-
+//Defining ThirdPersonCamera for our character
 class ThirdPersonCamera {
   constructor(params) {
     this._params = params;
