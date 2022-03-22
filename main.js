@@ -583,12 +583,12 @@ class ThirdPersonCameraDemo {
 
     const loader = new THREE.CubeTextureLoader();
     const texture = loader.load([
-        './resources/skybox/posx.jpg',
-        './resources/skybox/negx.jpg',
-        './resources/skybox/posy.jpg',
-        './resources/skybox/negy.jpg',
-        './resources/skybox/posz.jpg',
-        './resources/skybox/negz.jpg',
+        './resources/skybox/posy.bmp',
+        './resources/skybox/posx.bmp',
+        './resources/skybox/posz.bmp',
+        './resources/skybox/negy.bmp',
+        './resources/skybox/negz.bmp',
+        './resources/skybox/negx.bmp',
     ]);
     texture.encoding = THREE.sRGBEncoding;
     this._scene.background = texture;
