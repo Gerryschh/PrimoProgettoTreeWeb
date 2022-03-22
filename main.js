@@ -4,6 +4,7 @@ import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
 
 
+
 class BasicCharacterControllerProxy {
   constructor(animations) {
     this._animations = animations;
@@ -13,6 +14,8 @@ class BasicCharacterControllerProxy {
     return this._animations;
   }
 };
+
+
 
 
 class BasicCharacterController {
@@ -521,6 +524,7 @@ class ThirdPersonCameraDemo {
       antialias: true,
     });
     this._threejs.outputEncoding = THREE.sRGBEncoding;
+    // this._threejs.physicallyCorrectLights = true;
     this._threejs.shadowMap.enabled = true;
     this._threejs.shadowMap.type = THREE.PCFSoftShadowMap;
     this._threejs.setPixelRatio(window.devicePixelRatio);
@@ -535,13 +539,14 @@ class ThirdPersonCameraDemo {
     const fov = 60;
     const aspect = 1920 / 1080;
     const near = 1.0;
-    const far = 1000.0;
+    const far = 70000.0;
     this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this._camera.position.set(25, 10, 25);
 
+
     this._scene = new THREE.Scene();
 
-    let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+    /*let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
     light.position.set(-100, 100, 100);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
@@ -558,8 +563,22 @@ class ThirdPersonCameraDemo {
     light.shadow.camera.bottom = -50;
     this._scene.add(light);
 
+    
+
     light = new THREE.AmbientLight(0xFFFFFF, 0.25);
-    this._scene.add(light);
+    this._scene.add(light);*/
+
+    const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
+    this._scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight( 0xffffff, 0.65 );
+    this._camera.add(pointLight);
+    this._scene.add(this._camera);
+
+    const pointLight1 = new THREE.PointLight( 0xffffff, 0.3 );
+    this._camera.add(pointLight1);
+    pointLight1.position.set( 100, 100, 600 );
+    this._scene.add(this._camera);
 
     const loader = new THREE.CubeTextureLoader();
     const texture = loader.load([
@@ -573,18 +592,18 @@ class ThirdPersonCameraDemo {
     texture.encoding = THREE.sRGBEncoding;
     this._scene.background = texture;
 
-    const texturePlane = new THREE.TextureLoader().load('./resources/images/TreeWeb-logo-header-light.png');
+    /* const texturePlane = new THREE.TextureLoader().load('./resources/images/TreeWeb-logo-header-light.png');
 
    const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(10000, 10000, 10, 10),
         new THREE.MeshBasicMaterial({
-            /*map: texturePlane*/
+            map: texturePlane
             color: 0x002A00
           }));
     plane.castShadow = false;
     plane.receiveShadow = true;
     plane.rotation.x = -Math.PI / 2;
-    this._scene.add(plane);
+    this._scene.add(plane);*/
 
     this._mixers = [];
     this._previousRAF = null;
@@ -596,7 +615,7 @@ class ThirdPersonCameraDemo {
 
   _LoadModel() {
     const loader = new GLTFLoader();
-    loader.load('./resources/modelGLTF/2.gltf', (gltf) => {
+    loader.load('./resources/modelGLTF/join.gltf', (gltf) => {
       gltf.scene.scale.set(10,10,10);
         gltf.scene.traverse(c => {
             c.castShadow = true;
