@@ -8,20 +8,31 @@
 </head>
 <body>
   <div id="overlay">
-    <div class="spinner"></div> 
+    <img id="spinner" src="resources/images/bearGIF.gif"> 
     </div>
+
 
     <script type="text/javascript">
 
-window.addEventListener("load", function(){
-  setInterval(deleteLoadingDelayed, 5000);   
-});
-function deleteLoadingDelayed(){
-  var overlay = document.getElementById("overlay");
-  overlay.style.display = 'none';
-}
+    window.addEventListener("load", function(){
+    setInterval(deleteLoadingDelayed, 5000);   
+    });
+    function deleteLoadingDelayed(){
+        var overlay = document.getElementById("overlay");
+        overlay.style.display = 'none';
+    }
     </script>
-  <script src="./main.js" type="module">
-  </script>
+    
+    <script src="./main.js" type="module"></script>
+
+    <video
+      id="video"
+      loop
+      autoplay 
+      width="1920"
+      height="1080"
+      src="resources/videos/video3.mp4"
+      style="display: none"
+    ></video>
 </body>
 </html>
