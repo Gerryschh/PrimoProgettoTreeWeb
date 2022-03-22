@@ -5,6 +5,7 @@ import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/js
 
 
 
+
 class BasicCharacterControllerProxy {
   constructor(animations) {
     this._animations = animations;
