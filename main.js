@@ -569,6 +569,17 @@ class ThirdPersonCameraDemo {
     light = new THREE.AmbientLight(0xFFFFFF, 0.25);
     this._scene.add(light);*/
 
+    const video = document.getElementById('video');
+    const textureVideo = new THREE.VideoTexture(video);
+    const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
+    const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);
+    
+    
+
+    const mesh = new THREE.Mesh( cubo, videoMaterial);
+    mesh.position.set(-100, 600, -3000);
+    this._scene.add(mesh);
+
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
     this._scene.add(ambientLight);
 
@@ -617,7 +628,7 @@ class ThirdPersonCameraDemo {
   _LoadModel() {
     const loader = new GLTFLoader();
     loader.load('./resources/modelGLTF/join.gltf', (gltf) => {
-      gltf.scene.scale.set(10,10,10);
+      gltf.scene.scale.set(10, 10, 10);
         gltf.scene.traverse(c => {
             c.castShadow = true;
 
