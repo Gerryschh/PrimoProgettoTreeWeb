@@ -3,6 +3,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/OrbitControls.js';
+//import {TrackballControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/TrackballControls.js';
 
 
 class BasicCharacterControllerProxy {
@@ -73,7 +74,7 @@ class BasicCharacterController {
       loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
       loader.load('run.fbx', (a) => { _OnLoad('run', a); });
       loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
-      loader.load('dance.fbx', (a) => { _OnLoad('dance', a); });
+      //loader.load('dance.fbx', (a) => { _OnLoad('dance', a); });
     });
   }
 
@@ -114,7 +115,7 @@ class BasicCharacterController {
 
     const acc = this._acceleration.clone();
     if (this._input._keys.shift) {
-      acc.multiplyScalar(2.0);
+      acc.multiplyScalar(4.0);
     }
 
     if (this._stateMachine._currentState.Name == 'dance') {
@@ -276,7 +277,7 @@ class CharacterFSM extends FiniteStateMachine {
     this._AddState('idle', IdleState);
     this._AddState('walk', WalkState);
     this._AddState('run', RunState);
-    this._AddState('dance', DanceState);
+    //this._AddState('dance', DanceState);
   }
 };
 
@@ -292,7 +293,7 @@ class State {
 };
 
 //DanceState (When the character is dancing)
-class DanceState extends State {
+/*class DanceState extends State {
   constructor(parent) {
     super(parent);
 
@@ -340,7 +341,7 @@ class DanceState extends State {
 
   Update(_) {
   }
-};
+};*/
 
 //WalkState(When the character is walking)
 class WalkState extends State {
@@ -469,9 +470,9 @@ class IdleState extends State {
   Update(_, input) {
     if (input._keys.forward || input._keys.backward) {
       this._parent.SetState('walk');
-    } else if (input._keys.space) {
+    } /*else if (input._keys.space) {
       this._parent.SetState('dance');
-    }
+    }*/
   }
 };
 
@@ -502,12 +503,11 @@ class ThirdPersonCamera {
   Update(timeElapsed) {
     const idealOffset = this._CalculateIdealOffset();
     const idealLookat = this._CalculateIdealLookat();
-
+  
     const t = 1.0 - Math.pow(0.001, timeElapsed);
 
     this._currentPosition.lerp(idealOffset, t);
     this._currentLookat.lerp(idealLookat, t);
-
     this._camera.position.copy(this._currentPosition);
     this._camera.lookAt(this._currentLookat);
   }
@@ -541,8 +541,7 @@ class ThirdPersonCameraDemo {
     const near = 1.0;
     const far = 70000.0;
     this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this._camera.position.set(25, 10, 25);
-
+    this._camera.position.set(50, 10, 25);
 
     this._scene = new THREE.Scene();
 
@@ -550,7 +549,7 @@ class ThirdPersonCameraDemo {
     light.position.set(-100, 100, 100);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
-    light.shadow.bias = -0.001;
+    light.shadow.bias = -0.001;S
     light.shadow.mapSize.width = 4096;
     light.shadow.mapSize.height = 4096;
     light.shadow.camera.near = 0.1;
@@ -621,6 +620,7 @@ class ThirdPersonCameraDemo {
 
     this._LoadModel();
     this._LoadAnimatedModel();
+    this._LoadStaticModel()
     this._RAF();
   }
 
@@ -634,6 +634,23 @@ class ThirdPersonCameraDemo {
         });
         
         this._scene.add(gltf.scene);
+    });
+}
+
+_LoadStaticModel() {
+  const loader = new FBXLoader();
+    loader.setPath('./resources/character/');
+    loader.load('Amy.fbx', (fbx) => {
+      fbx.scale.setScalar(1.9);
+      fbx.rotation.set(0,9.5,0);
+      fbx.position.set(170,0,500);
+      fbx.traverse(c => {
+        c.castShadow = true;
+        
+      });
+
+      this._target = fbx;
+      this._scene.add(this._target);
     });
 }
 
@@ -663,7 +680,6 @@ class ThirdPersonCameraDemo {
       }
 
       this._RAF();
-
       this._threejs.render(this._scene, this._camera);
       this._Step(t - this._previousRAF);
       this._previousRAF = t;
@@ -679,7 +695,6 @@ class ThirdPersonCameraDemo {
     if (this._controls) {
       this._controls.Update(timeElapsedS);
     }
-
     this._thirdPersonCamera.Update(timeElapsedS);
   }
 }
