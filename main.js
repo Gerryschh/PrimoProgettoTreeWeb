@@ -602,25 +602,13 @@ class ThirdPersonCameraDemo {
     texture.encoding = THREE.sRGBEncoding;
     this._scene.background = texture;
 
-    /* const texturePlane = new THREE.TextureLoader().load('./resources/images/TreeWeb-logo-header-light.png');
-
-   const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(10000, 10000, 10, 10),
-        new THREE.MeshBasicMaterial({
-            map: texturePlane
-            color: 0x002A00
-          }));
-    plane.castShadow = false;
-    plane.receiveShadow = true;
-    plane.rotation.x = -Math.PI / 2;
-    this._scene.add(plane);*/
 
     this._mixers = [];
     this._previousRAF = null;
 
     this._LoadModel();
+    this._LoadStaticModel();
     this._LoadAnimatedModel();
-    this._LoadStaticModel()
     this._RAF();
   }
 
@@ -649,8 +637,15 @@ _LoadStaticModel() {
         
       });
 
-      this._target = fbx;
-      this._scene.add(this._target);
+      const anim = new FBXLoader();
+      anim.setPath('./resources/actions/');
+      anim.load('Standing Greeting.fbx', (anim) => {
+        const m = new THREE.AnimationMixer(fbx);
+        this._mixers.push(m);
+        const idle = m.clipAction(anim.animations[0]);
+        idle.play();
+      });
+      this._scene.add(fbx);
     });
 }
 
