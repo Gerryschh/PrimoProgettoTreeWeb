@@ -2,9 +2,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
-import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/OrbitControls.js';
-//import {TrackballControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/TrackballControls.js';
-
 
 class BasicCharacterControllerProxy {
   constructor(animations) {
@@ -15,7 +12,6 @@ class BasicCharacterControllerProxy {
     return this._animations;
   }
 };
-
 
 
 
@@ -520,6 +516,7 @@ class ThirdPersonCameraDemo {
   }
 
   _Initialize() {
+    var MainScene = function () {
     this._threejs = new THREE.WebGLRenderer({
       antialias: true,
     });
@@ -544,28 +541,6 @@ class ThirdPersonCameraDemo {
     this._camera.position.set(50, 10, 25);
 
     this._scene = new THREE.Scene();
-
-    /*let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
-    light.position.set(-100, 100, 100);
-    light.target.position.set(0, 0, 0);
-    light.castShadow = true;
-    light.shadow.bias = -0.001;S
-    light.shadow.mapSize.width = 4096;
-    light.shadow.mapSize.height = 4096;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 500.0;
-    light.shadow.camera.near = 0.5;
-    light.shadow.camera.far = 500.0;
-    light.shadow.camera.left = 50;
-    light.shadow.camera.right = -50;
-    light.shadow.camera.top = 50;
-    light.shadow.camera.bottom = -50;
-    this._scene.add(light);
-
-    
-
-    light = new THREE.AmbientLight(0xFFFFFF, 0.25);
-    this._scene.add(light);*/
 
     const video = document.getElementById('video');
     const textureVideo = new THREE.VideoTexture(video);
@@ -610,6 +585,7 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModel();
     this._LoadAnimatedModel();
     this._RAF();
+  };
   }
 
   _LoadModel() {
