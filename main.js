@@ -516,7 +516,6 @@ class ThirdPersonCameraDemo {
   }
 
   _Initialize() {
-    var MainScene = function () {
     this._threejs = new THREE.WebGLRenderer({
       antialias: true,
     });
@@ -585,7 +584,6 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModel();
     this._LoadAnimatedModel();
     this._RAF();
-  };
   }
 
   _LoadModel() {
