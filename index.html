@@ -15,24 +15,49 @@
     <script type="text/javascript">
 
     window.addEventListener("load", function(){
-    setInterval(deleteLoadingDelayed, 18000);   
+    setInterval(deleteLoadingDelayed, 18000);
+    setInterval(deleteLoadingSfondo, 18000);   
     });
     function deleteLoadingDelayed(){
         var overlay = document.getElementById("overlay");
         overlay.style.display = 'none';
     }
-    </script>
-    
-    <script src="./main.js" type="module"></script>
 
-    <video
-      id="video"
-      loop
-      autoplay 
-      width="1920"
-      height="1080"
-      src="resources/videos/video3.mp4"
-      style="display: none"
-    ></video>
+    function deleteLoadingSfondo(){
+        var sfondo = document.getElementById("sfondo");
+        sfondo.style.display = 'flex';
+    }
+    </script>
+
+  <div id="sfondo">
+  <nav id="lightbox">
+    <h1 id="benvenuto">Benvenuto nell'universo TreeWeb!
+      Clicca W A S D per muoverti nel mondo virtuale.
+    </h1>
+    <ul>
+      <li><a data-title="Inizia l'avventura!" id="jogar-btn" onclick=lightBoxClose()>ENTRA!</a></li>
+    </ul>
+  </nav>
+  </div>
+
+  <script type="text/javascript">
+  lightBoxClose = function() {
+  var sfondo = document.getElementById("sfondo");
+  sfondo.style.display = "none";
+  sfondo.style.visibility = "hidden";
+  }
+  </script>
+
+  <script src="./main.js" type="module"></script>
+
+  <video
+    id="video"
+    loop
+    autoplay 
+    width="1920"
+    height="1080"
+    src="resources/videos/video3.mp4"
+    style="display: none"
+  ></video>
 </body>
 </html>
