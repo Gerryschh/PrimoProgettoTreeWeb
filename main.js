@@ -543,6 +543,7 @@ class ThirdPersonCameraDemo {
     this._scene = new THREE.Scene();
 
     const video = document.getElementById('video');
+    video.play();
     const textureVideo = new THREE.VideoTexture(video);
     const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
     const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);

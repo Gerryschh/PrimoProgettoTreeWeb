@@ -56,14 +56,9 @@
 
   <script src="./main.js" type="module"></script>
 
-  <video
-    id="video"
-    loop
-    autoplay 
-    width="1920"
-    height="1080"
-    src="resources/videos/video3.mp4"
-    style="display: none"
-  ></video>
+  <video id="video" loop autoplay muted crossOrigin="anonymous" playsinline style="display:none">
+    <source src="resources/videos/video3.webm">
+    <source src="resources/videos/video3.mp4">
+  </video>
 </body>
 </html>
