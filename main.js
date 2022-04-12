@@ -532,6 +532,7 @@ class ThirdPersonCameraDemo {
       this._OnWindowResize();
     }, false);
 
+    //Loading Camera
     const fov = 60;
     const aspect = 1920 / 1080;
     const near = 1.0;
@@ -552,6 +553,7 @@ class ThirdPersonCameraDemo {
     mesh.position.set(-100, 600, -3000);
     this._scene.add(mesh);
 
+    //Loading lights
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
     this._scene.add(ambientLight);
 
@@ -564,6 +566,7 @@ class ThirdPersonCameraDemo {
     pointLight1.position.set( 100, 100, 600 );
     this._scene.add(this._camera);
 
+    //Loading skybox
     const loader = new THREE.CubeTextureLoader();
     const texture = loader.load([
         './resources/skybox/posy.bmp',
@@ -678,26 +681,3 @@ let _APP = null;
 window.addEventListener('DOMContentLoaded', () => {
   _APP = new ThirdPersonCameraDemo();
 });
-
-/*
-function _LerpOverFrames(frames, t) {
-  const s = new THREE.Vector3(0, 0, 0);
-  const e = new THREE.Vector3(100, 0, 0);
-  const c = s.clone();
-
-  for (let i = 0; i < frames; i++) {
-    c.lerp(e, t);
-  }
-  return c;
-}
-
-function _TestLerp(t1, t2) {
-  const v1 = _LerpOverFrames(100, t1);
-  const v2 = _LerpOverFrames(50, t2);
-  console.log(v1.x + ' | ' + v2.x);
-}
-
-_TestLerp(0.01, 0.01);
-_TestLerp(1.0 / 100.0, 1.0 / 50.0);
-_TestLerp(1.0 - Math.pow(0.3, 1.0 / 100.0), 
-          1.0 - Math.pow(0.3, 1.0 / 50.0));*/
