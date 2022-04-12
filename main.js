@@ -35,7 +35,7 @@ class BasicCharacterController {
     this._LoadModels();
   }
 
-  //It loads the character and its movements 
+  //It loads the character, its movements and its animation
   _LoadModels() {
     const loader = new FBXLoader();
     loader.setPath('./resources/character/');
@@ -70,7 +70,7 @@ class BasicCharacterController {
       loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
       loader.load('run.fbx', (a) => { _OnLoad('run', a); });
       loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
-      //loader.load('dance.fbx', (a) => { _OnLoad('dance', a); });
+      //loader.load('dance.fbx', (a) => { _OnLoad('dance', a); }); //Dance state removed for a bug
     });
   }
 
@@ -162,6 +162,7 @@ class BasicCharacterController {
   }
 };
 
+//
 class BasicCharacterControllerInput {
   constructor() {
     this._Init();    
@@ -227,7 +228,7 @@ class BasicCharacterControllerInput {
   }
 };
 
-
+//Declaring stateMachine for character's states
 class FiniteStateMachine {
   constructor() {
     this._states = {};
@@ -273,7 +274,7 @@ class CharacterFSM extends FiniteStateMachine {
     this._AddState('idle', IdleState);
     this._AddState('walk', WalkState);
     this._AddState('run', RunState);
-    //this._AddState('dance', DanceState);
+    //this._AddState('dance', DanceState); //Dance state removed for a bug
   }
 };
 
@@ -288,7 +289,7 @@ class State {
   Update() {}
 };
 
-//DanceState (When the character is dancing)
+//DanceState (When the character is dancing) //Dance state removed for a bug
 /*class DanceState extends State {
   constructor(parent) {
     super(parent);
@@ -468,11 +469,11 @@ class IdleState extends State {
       this._parent.SetState('walk');
     } /*else if (input._keys.space) {
       this._parent.SetState('dance');
-    }*/
+    }*/ //Dance state removed for a bug
   }
 };
 
-//Defining ThirdPersonCamera for our character
+//Defining ThirdPersonCamera for our character that follows what the player is looking at
 class ThirdPersonCamera {
   constructor(params) {
     this._params = params;
@@ -509,7 +510,7 @@ class ThirdPersonCamera {
   }
 }
 
-
+//Main class that instanciate all the other things
 class ThirdPersonCameraDemo {
   constructor() {
     this._Initialize();
@@ -520,7 +521,6 @@ class ThirdPersonCameraDemo {
       antialias: true,
     });
     this._threejs.outputEncoding = THREE.sRGBEncoding;
-    // this._threejs.physicallyCorrectLights = true;
     this._threejs.shadowMap.enabled = true;
     this._threejs.shadowMap.type = THREE.PCFSoftShadowMap;
     this._threejs.setPixelRatio(window.devicePixelRatio);
@@ -586,6 +586,7 @@ class ThirdPersonCameraDemo {
     this._RAF();
   }
 
+  //Function that loads the plane done with Blender
   _LoadModel() {
     const loader = new GLTFLoader();
     loader.load('./resources/modelGLTF/join.gltf', (gltf) => {
@@ -599,6 +600,7 @@ class ThirdPersonCameraDemo {
     });
 }
 
+//Function that loads one character that is doing an animation in idle
 _LoadStaticModel() {
   const loader = new FBXLoader();
     loader.setPath('./resources/character/');
@@ -623,6 +625,7 @@ _LoadStaticModel() {
     });
 }
 
+//Function that loads the Main Character with its camera and controls
   _LoadAnimatedModel() {
     const params = {
       camera: this._camera,
@@ -642,6 +645,7 @@ _LoadStaticModel() {
     this._threejs.setSize(window.innerWidth, window.innerHeight);
   }
 
+  //Request Animation Frame for the renderer
   _RAF() {
     requestAnimationFrame((t) => {
       if (this._previousRAF === null) {
@@ -675,7 +679,7 @@ window.addEventListener('DOMContentLoaded', () => {
   _APP = new ThirdPersonCameraDemo();
 });
 
-
+/*
 function _LerpOverFrames(frames, t) {
   const s = new THREE.Vector3(0, 0, 0);
   const e = new THREE.Vector3(100, 0, 0);
@@ -696,4 +700,4 @@ function _TestLerp(t1, t2) {
 _TestLerp(0.01, 0.01);
 _TestLerp(1.0 / 100.0, 1.0 / 50.0);
 _TestLerp(1.0 - Math.pow(0.3, 1.0 / 100.0), 
-          1.0 - Math.pow(0.3, 1.0 / 50.0));
+          1.0 - Math.pow(0.3, 1.0 / 50.0));*/
