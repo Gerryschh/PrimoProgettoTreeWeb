@@ -542,7 +542,7 @@ class ThirdPersonCameraDemo {
 
     this._scene = new THREE.Scene();
 
-    //Loading cube with a video playing on it
+    //Loading cube with a video playing on it (no audio)
     const video = document.getElementById('video');
     video.play();
     const textureVideo = new THREE.VideoTexture(video);
@@ -582,6 +582,7 @@ class ThirdPersonCameraDemo {
     this._mixers = [];
     this._previousRAF = null;
 
+    //Functions
     this._LoadModel();
     this._LoadAnimatedModel();
     this._LoadStaticModelEmptyZone();
