@@ -111,7 +111,7 @@ class BasicCharacterController {
 
     const acc = this._acceleration.clone();
     if (this._input._keys.shift) {
-      acc.multiplyScalar(4.0);
+      acc.multiplyScalar(5.0);
     }
 
     if (this._stateMachine._currentState.Name == 'dance') {
@@ -542,14 +542,12 @@ class ThirdPersonCameraDemo {
 
     this._scene = new THREE.Scene();
 
+    //Loading cube with a video playing on it
     const video = document.getElementById('video');
     video.play();
     const textureVideo = new THREE.VideoTexture(video);
     const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
     const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);
-    
-    
-
     const mesh = new THREE.Mesh( cubo, videoMaterial);
     mesh.position.set(-100, 600, -3000);
     this._scene.add(mesh);
@@ -585,8 +583,11 @@ class ThirdPersonCameraDemo {
     this._previousRAF = null;
 
     this._LoadModel();
-    this._LoadStaticModel();
     this._LoadAnimatedModel();
+    this._LoadStaticModelEmptyZone();
+    this._LoadStaticModelWaterZone();
+    this._LoadStaticModelCenterZone();
+    this._LoadStaticModelCinemaZone();
     this._RAF();
   }
 
@@ -604,22 +605,97 @@ class ThirdPersonCameraDemo {
     });
 }
 
-//Function that loads one character that is doing an animation in idle
-_LoadStaticModel() {
+//Function that loads one character in the EmptyZone
+_LoadStaticModelEmptyZone() {
   const loader = new FBXLoader();
     loader.setPath('./resources/character/');
-    loader.load('Amy.fbx', (fbx) => {
-      fbx.scale.setScalar(1.9);
+    loader.load('jolleen.fbx', (fbx) => {
+      fbx.scale.setScalar(0.13);
       fbx.rotation.set(0,9.5,0);
-      fbx.position.set(170,0,500);
+      fbx.position.set(110,0,350);
       fbx.traverse(c => {
         c.castShadow = true;
         
       });
 
       const anim = new FBXLoader();
-      anim.setPath('./resources/actions/');
-      anim.load('Standing Greeting.fbx', (anim) => {
+      anim.setPath('./resources/actions/idleActions/');
+      anim.load('SGJolleen.fbx', (anim) => {
+        const m = new THREE.AnimationMixer(fbx);
+        this._mixers.push(m);
+        const idle = m.clipAction(anim.animations[0]);
+        idle.play();
+      });
+      this._scene.add(fbx);
+    });
+}
+
+//Function that loads one character in the WaterZone
+_LoadStaticModelWaterZone() {
+  const loader = new FBXLoader();
+    loader.setPath('./resources/character/');
+    loader.load('Doozy.fbx', (fbx) => {
+      fbx.scale.setScalar(0.14);
+      fbx.rotation.set(0,20,0);
+      fbx.position.set(-970,0,-100);
+      fbx.traverse(c => {
+        c.castShadow = true;
+        
+      });
+
+      const anim = new FBXLoader();
+      anim.setPath('./resources/actions/idleActions/');
+      anim.load('WavingDoozy.fbx', (anim) => {
+        const m = new THREE.AnimationMixer(fbx);
+        this._mixers.push(m);
+        const idle = m.clipAction(anim.animations[0]);
+        idle.play();
+      });
+      this._scene.add(fbx);
+    });
+}
+
+//Function that loads one character in the CenterZone
+_LoadStaticModelCenterZone() {
+  const loader = new FBXLoader();
+    loader.setPath('./resources/character/');
+    loader.load('Amy.fbx', (fbx) => {
+      fbx.scale.setScalar(0.15);
+      fbx.rotation.set(0,9.5,0);
+      fbx.position.set(-6,0,107);
+      fbx.traverse(c => {
+        c.castShadow = true;
+        
+      });
+
+      const anim = new FBXLoader();
+      anim.setPath('./resources/actions/idleActions/');
+      anim.load('WavingAmy.fbx', (anim) => {
+        const m = new THREE.AnimationMixer(fbx);
+        this._mixers.push(m);
+        const idle = m.clipAction(anim.animations[0]);
+        idle.play();
+      });
+      this._scene.add(fbx);
+    });
+}
+
+//Function that loads one character in the CinemaZone
+_LoadStaticModelCinemaZone() {
+  const loader = new FBXLoader();
+    loader.setPath('./resources/character/');
+    loader.load('aj.fbx', (fbx) => {
+      fbx.scale.setScalar(0.15);
+      fbx.rotation.set(0,25,0);
+      fbx.position.set(20,0,-605);
+      fbx.traverse(c => {
+        c.castShadow = true;
+        
+      });
+
+      const anim = new FBXLoader();
+      anim.setPath('./resources/actions/idleActions/');
+      anim.load('PointingAJ.fbx', (anim) => {
         const m = new THREE.AnimationMixer(fbx);
         this._mixers.push(m);
         const idle = m.clipAction(anim.animations[0]);
