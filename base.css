@@ -60,8 +60,8 @@ top:0;
 }
 
 nav{
-  height: 35%;
-  width: 40%;
+  height: auto;
+  width: auto;
   position: absolute;
   top: 50%;
   left: 50%;
