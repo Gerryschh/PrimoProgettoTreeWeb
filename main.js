@@ -557,17 +557,14 @@ class ThirdPersonCameraDemo {
     const provaAudio = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     const cuboAudio = new THREE.Mesh( geometry1, provaAudio );
     cuboAudio.position.set(0, -2, -615);
-    this._scene.add( cuboAudio );
-
     this._listener = new THREE.AudioListener();
     this._camera.add(this._listener);
     
-
     const sound = new THREE.PositionalAudio(this._listener);
     const loaderSound = new THREE.AudioLoader();
     loaderSound.load('resources/audio/audio.mp3', (buffer) => {
       sound.setBuffer(buffer);
-      sound.setVolume(17);
+      sound.setVolume(40);
       sound.setRolloffFactor(1);
       sound.setLoop(true);
       sound.setRefDistance(0.5);
@@ -576,6 +573,7 @@ class ThirdPersonCameraDemo {
     });
 
     cuboAudio.add(sound);
+    this._scene.add( cuboAudio );
 
     //Loading lights
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
