@@ -544,7 +544,6 @@ class ThirdPersonCameraDemo {
 
     //Loading cube with a video playing on it (no audio)
     const video = document.getElementById('video');
-    video.play();
     const textureVideo = new THREE.VideoTexture(video);
     const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
     const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);
@@ -552,28 +551,6 @@ class ThirdPersonCameraDemo {
     mesh.position.set(-100, 600, -3000);
     this._scene.add(mesh);
 
-    //Loading Cube with PositionalAudio
-    const geometry1 = new THREE.BoxGeometry();
-    const provaAudio = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    const cuboAudio = new THREE.Mesh( geometry1, provaAudio );
-    cuboAudio.position.set(0, -2, -615);
-    this._listener = new THREE.AudioListener();
-    this._camera.add(this._listener);
-    
-    const sound = new THREE.PositionalAudio(this._listener);
-    const loaderSound = new THREE.AudioLoader();
-    loaderSound.load('resources/audio/audio.mp3', (buffer) => {
-      sound.setBuffer(buffer);
-      sound.setVolume(40);
-      sound.setRolloffFactor(1);
-      sound.setLoop(true);
-      sound.setRefDistance(0.5);
-      sound.setMaxDistance(1);
-      sound.play();
-    });
-
-    cuboAudio.add(sound);
-    this._scene.add( cuboAudio );
 
     //Loading lights
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
