@@ -70,11 +70,11 @@
     window.addEventListener('keydown', function(e){
         var key=e.keyCode;
         const video = document.getElementById("video");
-        if (e.keyCode == "80")
+        if (e.shiftKey && e.keyCode == "80")
         {
           video.play();
         }
-        else if(e.keyCode == "79")
+        else if(e.shiftKey && e.keyCode == "79")
         {
           video.pause();
         }
