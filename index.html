@@ -15,8 +15,8 @@
     <script type="text/javascript">
 
     window.addEventListener("load", function(){
-    setInterval(deleteLoadingDelayed, 40000);
-    setInterval(deleteLoadingSfondo, 40000);   
+    setInterval(deleteLoadingDelayed, 1000);
+    setInterval(deleteLoadingSfondo, 1000);   
     });
     function deleteLoadingDelayed(){
         var overlay = document.getElementById("overlay");
@@ -47,11 +47,40 @@
   </div>
 
   <script type="text/javascript">
-  lightBoxClose = function() {
-  var sfondo = document.getElementById("sfondo");
-  sfondo.style.display = "none";
-  sfondo.style.visibility = "hidden";
-  }
+    lightBoxClose = function() {
+    var sfondo = document.getElementById("sfondo");
+    sfondo.style.display = "none";
+    sfondo.style.visibility = "hidden";
+    }
+  </script>
+
+
+  <div id="popup1">
+  <nav id="lightboxpopup1">
+  <h1 id="popup1scritta">
+    LOREM IPSUM
+  </h1>
+
+  <a id="bottoneChiudi" onclick="popupclose1()">CHIUDI</a>
+
+  </nav>
+  </div>
+
+  <script type="text/javascript">
+    popupclose1 = function() {
+      var popup1 = document.getElementById("popup1");
+      popup1.style.display = "none";
+      popup1.style.visibility = "hidden";
+    }
+    window.addEventListener('keydown', function(e){
+        var key=e.keyCode;
+        const popup1key = document.getElementById("popup1");
+        if (e.shiftKey && e.keyCode == "76")
+        {
+          popup1key.style.display = "flex";
+          popup1key.style.visibility = "visible";
+        }
+    });
   </script>
 
   <script src="./main.js" type="module"></script>
@@ -64,6 +93,7 @@
   <div class="keys">
     <div class="key" data-key="80"><kbd>P</kbd></div>
     <div class="key" data-key="79"><kbd>O</kbd></div>
+    <div class="key" data-key="76"><kbd>L</kbd></div>
   </div>
 
 <script>

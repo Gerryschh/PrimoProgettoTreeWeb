@@ -63,6 +63,25 @@ top:0;
   background: rgba(0, 0, 0, .5)
 }
 
+#popup1 {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  visibility: hidden;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0)
+}
+
+#lightboxpopup1 {
+  background-color: #ffffff8d;
+  top: 30%;
+  padding-bottom: 15px;
+}
+
 nav{
   height: auto;
   width: auto;
@@ -83,6 +102,20 @@ a{
   color: rgb(36, 125, 39);
   transition: all linear .3s;
 }
+#bottoneChiudi {
+  color: #000000;
+}
+#bottoneChiudi:hover {
+  color: #ffffff;
+  position: relative;
+  cursor: pointer;
+  text-shadow: rgb(101, 109, 100) 0px 1px 0px,
+  rgb(51, 52, 51) 0px 2px 0px,
+  rgba(0, 0, 0, 0.199219) 0px 3px 1px,
+  rgba(0, 0, 0, 0.296875) 0px 4px 2px;
+  transition: all linear .3s;
+}
+
 a:hover{
   color: #15ff00;
   position: relative;
