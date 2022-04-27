@@ -595,7 +595,7 @@ class ThirdPersonCameraDemo {
   //Function that loads the plane done with Blender
   _LoadModel() {
     const loader = new GLTFLoader();
-    loader.load('./resources/modelGLTF/mondoglb.glb', (gltf) => {
+    loader.load('./resources/modelGLTF/TreeWeb.glb', (gltf) => {
       gltf.scene.scale.set(10, 10, 10);
         gltf.scene.traverse(c => {
             c.castShadow = true;
