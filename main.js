@@ -536,7 +536,7 @@ class ThirdPersonCameraDemo {
     const fov = 60;
     const aspect = 1920 / 1080;
     const near = 1.0;
-    const far = 70000.0;
+    const far = 10000.0;
     this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this._camera.position.set(50, 10, 25);
 
@@ -595,7 +595,7 @@ class ThirdPersonCameraDemo {
   //Function that loads the plane done with Blender
   _LoadModel() {
     const loader = new GLTFLoader();
-    loader.load('./resources/modelGLTF/treewebPlane.gltf', (gltf) => {
+    loader.load('./resources/modelGLTF/mondoglb.glb', (gltf) => {
       gltf.scene.scale.set(10, 10, 10);
         gltf.scene.traverse(c => {
             c.castShadow = true;
