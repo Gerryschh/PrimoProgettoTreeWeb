@@ -4,6 +4,7 @@ import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
 import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/geometries/OctahedronGeometry.js';
 import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/materials/MeshNormalMaterial.js';
+import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/OBJLoader.js';
 
 class BasicCharacterControllerProxy {
   constructor(animations) {
@@ -553,8 +554,8 @@ class ThirdPersonCameraDemo {
     this.NPCOctahedronMesh4 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
     this.NPCOctahedronMesh1.position.set(-6, 26, 107);
     this.NPCOctahedronMesh2.position.set(110, 26, 350);
-    this.NPCOctahedronMesh3.position.set(-970, 26, 100);
-    this.NPCOctahedronMesh4.position.set(20, 28, -605);
+    this.NPCOctahedronMesh3.position.set(-970, 26, -100);
+    this.NPCOctahedronMesh4.position.set(21, 32, -603);
     this._scene.add(this.NPCOctahedronMesh1);
     this._scene.add(this.NPCOctahedronMesh2);
     this._scene.add(this.NPCOctahedronMesh3);
@@ -569,6 +570,11 @@ class ThirdPersonCameraDemo {
     mesh.position.set(-100, 600, -3000);
     this._scene.add(mesh);
 
+    /* //Creating a Cube
+    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    this.trycube = new THREE.Mesh( geometry, material );
+    this._scene.add( this.trycube ); */
 
     //Loading lights
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
@@ -600,6 +606,9 @@ class ThirdPersonCameraDemo {
     this._mixers = [];
     this._previousRAF = null;
 
+    this.n = 0.2;
+    this.m = 0;
+
     //Functions
     this._LoadModel();
     this._LoadAnimatedModel();
@@ -608,6 +617,7 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModelCenterZone();
     this._LoadStaticModelCinemaZone();
     this._RAF();
+    this._LoadBee();
   }
 
   //Function that loads the plane done with Blender
@@ -724,6 +734,21 @@ _LoadStaticModelCinemaZone() {
     });
 }
 
+//Function that loads bees
+_LoadBee() {
+  const loader = new GLTFLoader();
+    loader.load('./resources/animals/bee.gltf', (gltf) => {
+      gltf.scene.scale.set(1, 1, 1);
+      gltf.scene.name = 'ape';
+        gltf.scene.traverse(c => {
+            c.castShadow = true;
+
+        });
+        
+        this._scene.add(gltf.scene);
+    }); 
+}
+
 //Function that loads the Main Character with its camera and controls
   _LoadAnimatedModel() {
     const params = {
@@ -736,6 +761,33 @@ _LoadStaticModelCinemaZone() {
       camera: this._camera,
       target: this._controls,
     });
+  }
+
+  anim(obj){
+
+      obj.position.x += this.n;
+      obj.position.y += this.m;
+      
+      if (obj.position.x > 10) {
+        obj.position.x -= 0.2;
+        this.n = 0;
+        this.m = 0.2;
+      }
+      if (obj.position.x < -10) {
+        obj.position.x = -10;
+        this.n = 0;
+        this.m = -0.2;
+      }
+      if (obj.position.y > 20) {
+        obj.position.y -= 0.2;
+        this.n = -0.2;
+        this.m = 0;
+      }
+      if (obj.position.y < 1) {
+        obj.position.y = 1;
+        this.n = 0.2;
+        this.m = 0;
+      }
   }
 
   _OnWindowResize() {
@@ -752,7 +804,9 @@ _LoadStaticModelCinemaZone() {
       }
 
       this._RAF();
-      
+      //this.anim(this.trycube);
+      var apeObject = this._scene.getObjectByName('ape');
+      this.anim(apeObject);
       this.NPCOctahedronMesh1.rotation.y +=0.017;         
       this.NPCOctahedronMesh2.rotation.y +=0.017;
       this.NPCOctahedronMesh3.rotation.y +=0.017;
