@@ -570,18 +570,13 @@ class ThirdPersonCameraDemo {
     mesh.position.set(-100, 600, -3000);
     this._scene.add(mesh);
 
-    /* //Creating a Cube
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    this.trycube = new THREE.Mesh( geometry, material );
-    this._scene.add( this.trycube ); */
-
     //Loading lights
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
     this._scene.add(ambientLight);
 
-    const pointLight = new THREE.PointLight( 0xffffff, 0.65 );
+    const pointLight = new THREE.PointLight( 0xffffff, 0.30 );
     this._camera.add(pointLight);
+    pointLight.position.set( 5, 5, 5 );
     this._scene.add(this._camera);
 
     const pointLight1 = new THREE.PointLight( 0xffffff, 0.3 );
@@ -606,9 +601,6 @@ class ThirdPersonCameraDemo {
     this._mixers = [];
     this._previousRAF = null;
 
-    this.n = 0.2;
-    this.m = 0;
-
     //Functions
     this._LoadModel();
     this._LoadAnimatedModel();
@@ -616,8 +608,10 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModelWaterZone();
     this._LoadStaticModelCenterZone();
     this._LoadStaticModelCinemaZone();
+    this._LoadBee(10, 10, 10);
+    this._LoadBee(0, 10, 20);
+    this._LoadBee(20, 10, 0);
     this._RAF();
-    this._LoadBee();
   }
 
   //Function that loads the plane done with Blender
@@ -633,6 +627,28 @@ class ThirdPersonCameraDemo {
         this._scene.add(gltf.scene);
     });
 }
+
+//Function that loads a Bee
+_LoadBee(x, y, z) {
+  const loader = new GLTFLoader();
+  loader.load('./resources/animals/bee.gltf', (gltf) => {
+    const model = gltf.scene;
+    model.position.set(x, y, z);
+    model.traverse(c => {
+      c.castShadow = true;
+    });
+
+    this._scene.add(model);
+    const m = new THREE.AnimationMixer(model);
+    this._mixers.push(m);
+    const clips = gltf.animations;
+    clips.forEach(function(clip){
+      const action = m.clipAction(clip);
+      action.play();
+    });
+    });
+  }
+
 
 //Function that loads one character in the EmptyZone
 _LoadStaticModelEmptyZone() {
@@ -734,20 +750,7 @@ _LoadStaticModelCinemaZone() {
     });
 }
 
-//Function that loads bees
-_LoadBee() {
-  const loader = new GLTFLoader();
-    loader.load('./resources/animals/bee.gltf', (gltf) => {
-      gltf.scene.scale.set(1, 1, 1);
-      gltf.scene.name = 'ape';
-        gltf.scene.traverse(c => {
-            c.castShadow = true;
 
-        });
-        
-        this._scene.add(gltf.scene);
-    }); 
-}
 
 //Function that loads the Main Character with its camera and controls
   _LoadAnimatedModel() {
@@ -763,32 +766,6 @@ _LoadBee() {
     });
   }
 
-  anim(obj){
-
-      obj.position.x += this.n;
-      obj.position.y += this.m;
-      
-      if (obj.position.x > 10) {
-        obj.position.x -= 0.2;
-        this.n = 0;
-        this.m = 0.2;
-      }
-      if (obj.position.x < -10) {
-        obj.position.x = -10;
-        this.n = 0;
-        this.m = -0.2;
-      }
-      if (obj.position.y > 20) {
-        obj.position.y -= 0.2;
-        this.n = -0.2;
-        this.m = 0;
-      }
-      if (obj.position.y < 1) {
-        obj.position.y = 1;
-        this.n = 0.2;
-        this.m = 0;
-      }
-  }
 
   _OnWindowResize() {
     this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -804,9 +781,6 @@ _LoadBee() {
       }
 
       this._RAF();
-      //this.anim(this.trycube);
-      var apeObject = this._scene.getObjectByName('ape');
-      this.anim(apeObject);
       this.NPCOctahedronMesh1.rotation.y +=0.017;         
       this.NPCOctahedronMesh2.rotation.y +=0.017;
       this.NPCOctahedronMesh3.rotation.y +=0.017;
