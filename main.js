@@ -2,6 +2,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
+import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/geometries/OctahedronGeometry.js';
+import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/materials/MeshNormalMaterial.js';
 
 class BasicCharacterControllerProxy {
   constructor(animations) {
@@ -542,6 +544,22 @@ class ThirdPersonCameraDemo {
 
     this._scene = new THREE.Scene();
 
+    //Loading OctahedronGeometry on NPC
+    const NPCOctahedronGeometry = new THREE.OctahedronGeometry(1.7, 0);
+    const NPCOctahedronMaterial = new THREE.MeshNormalMaterial ({color: 0x00ff00});
+    this.NPCOctahedronMesh1 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+    this.NPCOctahedronMesh2 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+    this.NPCOctahedronMesh3 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+    this.NPCOctahedronMesh4 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+    this.NPCOctahedronMesh1.position.set(-6, 26, 107);
+    this.NPCOctahedronMesh2.position.set(110, 26, 350);
+    this.NPCOctahedronMesh3.position.set(-970, 26, 100);
+    this.NPCOctahedronMesh4.position.set(20, 28, -605);
+    this._scene.add(this.NPCOctahedronMesh1);
+    this._scene.add(this.NPCOctahedronMesh2);
+    this._scene.add(this.NPCOctahedronMesh3);
+    this._scene.add(this.NPCOctahedronMesh4);
+
     //Loading cube with a video playing on it (no audio)
     const video = document.getElementById('video');
     const textureVideo = new THREE.VideoTexture(video);
@@ -734,6 +752,12 @@ _LoadStaticModelCinemaZone() {
       }
 
       this._RAF();
+      
+      this.NPCOctahedronMesh1.rotation.y +=0.017;         
+      this.NPCOctahedronMesh2.rotation.y +=0.017;
+      this.NPCOctahedronMesh3.rotation.y +=0.017;
+      this.NPCOctahedronMesh4.rotation.y +=0.017;
+
       this._threejs.render(this._scene, this._camera);
       this._Step(t - this._previousRAF);
       this._previousRAF = t;
@@ -745,7 +769,6 @@ _LoadStaticModelCinemaZone() {
     if (this._mixers) {
       this._mixers.map(m => m.update(timeElapsedS));
     }
-
     if (this._controls) {
       this._controls.Update(timeElapsedS);
     }
