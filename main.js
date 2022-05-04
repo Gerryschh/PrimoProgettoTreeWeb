@@ -601,13 +601,19 @@ class ThirdPersonCameraDemo {
     this._mixers = [];
     this._previousRAF = null;
 
-    //Functions
+    //Loading the plane
     this._LoadPlane();
+
+    //Loading Main Character
     this._LoadAnimatedModel();
+
+    //Loading IdleAnimatedModels
     this._LoadStaticModelEmptyZone();
     this._LoadStaticModelWaterZone();
     this._LoadStaticModelCenterZone();
     this._LoadStaticModelCinemaZone();
+
+    //Loading animated bees and butterflies
     this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
     this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 80, 10, -500, 1);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 80, 10, -500, 1);
@@ -615,7 +621,11 @@ class ThirdPersonCameraDemo {
     this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -600, 1);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
+
+    //Loading Texts
     this._LoadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 1000, 40, -330, 80);
+
+    //RAF
     this._RAF();
   }
 
