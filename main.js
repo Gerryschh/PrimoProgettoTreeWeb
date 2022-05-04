@@ -631,7 +631,7 @@ class ThirdPersonCameraDemo {
 //Function that loads a Bee
 _LoadBee(x, y, z) {
   const loader = new GLTFLoader();
-  loader.load('./resources/animals/bee.gltf', (gltf) => {
+  loader.load('./resources/animals/bee1.gltf', (gltf) => {
     const model = gltf.scene;
     model.position.set(x, y, z);
     model.traverse(c => {
