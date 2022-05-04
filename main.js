@@ -608,9 +608,9 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModelWaterZone();
     this._LoadStaticModelCenterZone();
     this._LoadStaticModelCinemaZone();
-    this._LoadBee(10, 10, 10);
-    this._LoadBee(0, 10, 20);
-    this._LoadBee(20, 10, 0);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 0, 10, 0, 1, 1, 1);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee2.gltf', 0, 10, 0, 1, 1, 1);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 0, 10, 0, 1, 1, 1);
     this._RAF();
   }
 
@@ -628,11 +628,12 @@ class ThirdPersonCameraDemo {
     });
 }
 
-//Function that loads a Bee
-_LoadBee(x, y, z) {
+//Function that loads an animated model from blender
+_LoadAnimatedModelFromBlender(modelPath, x, y, z, modelScaleX, modelScaleY, modelScaleZ) {
   const loader = new GLTFLoader();
-  loader.load('./resources/animals/bee1.gltf', (gltf) => {
+  loader.load(modelPath, (gltf) => {
     const model = gltf.scene;
+    model.scale.set(modelScaleX, modelScaleY, modelScaleZ);
     model.position.set(x, y, z);
     model.traverse(c => {
       c.castShadow = true;
