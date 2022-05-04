@@ -609,8 +609,11 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModelCenterZone();
     this._LoadStaticModelCinemaZone();
     this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
+    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 80, 10, -500, 1);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 80, 10, -500, 1);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 80, 10, -460, 1);
+    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -600, 1);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee2.gltf', 60, 15, -350, 0.7);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
     this._LoadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 1000, 40, -330, 80);
     this._RAF();
