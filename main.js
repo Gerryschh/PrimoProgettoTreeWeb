@@ -608,10 +608,10 @@ class ThirdPersonCameraDemo {
     this._LoadStaticModelWaterZone();
     this._LoadStaticModelCenterZone();
     this._LoadStaticModelCinemaZone();
-    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1, 1, 1);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7, 0.7, 0.7);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee2.gltf', 60, 15, -350, 0.7, 0.7, 0.7);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7, 0.7, 0.7);
+    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee2.gltf', 60, 15, -350, 0.7);
+    this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
     this._RAF();
   }
 
@@ -630,11 +630,11 @@ class ThirdPersonCameraDemo {
 }
 
 //Function that loads an animated model from blender
-_LoadAnimatedModelFromBlender(modelPath, x, y, z, modelScaleX, modelScaleY, modelScaleZ) {
+_LoadAnimatedModelFromBlender(modelPath, x, y, z, modelScale) {
   const loader = new GLTFLoader();
   loader.load(modelPath, (gltf) => {
     const model = gltf.scene;
-    model.scale.set(modelScaleX, modelScaleY, modelScaleZ);
+    model.scale.set(modelScale, modelScale, modelScale);
     model.position.set(x, y, z);
     model.traverse(c => {
       c.castShadow = true;
