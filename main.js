@@ -612,6 +612,7 @@ class ThirdPersonCameraDemo {
     this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee2.gltf', 60, 15, -350, 0.7);
     this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
+    this._LoadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 1000, 40, -330, 80);
     this._RAF();
   }
 
@@ -626,6 +627,29 @@ class ThirdPersonCameraDemo {
         });
         
         this._scene.add(gltf.scene);
+    });
+}
+
+_LoadWorkingZoneText(modelPath, x, y, z, modelScale)
+{
+  const loader = new GLTFLoader();
+  loader.load(modelPath, (gltf) => {
+    const model = gltf.scene;
+    model.scale.set(modelScale, modelScale, modelScale);
+    model.rotation.set(0,4.7,0);
+    model.position.set(x, y, z);
+    model.traverse(c => {
+      c.castShadow = true;
+    });
+
+    this._scene.add(model);
+    const m = new THREE.AnimationMixer(model);
+    this._mixers.push(m);
+    const clips = gltf.animations;
+    clips.forEach(function(clip){
+      const action = m.clipAction(clip);
+      action.play();
+    });
     });
 }
 
