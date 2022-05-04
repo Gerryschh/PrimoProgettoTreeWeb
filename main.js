@@ -602,7 +602,7 @@ class ThirdPersonCameraDemo {
     this._previousRAF = null;
 
     //Functions
-    this._LoadModel();
+    this._LoadPlane();
     this._LoadAnimatedModel();
     this._LoadStaticModelEmptyZone();
     this._LoadStaticModelWaterZone();
@@ -617,7 +617,7 @@ class ThirdPersonCameraDemo {
   }
 
   //Function that loads the plane done with Blender
-  _LoadModel() {
+  _LoadPlane() {
     const loader = new GLTFLoader();
     loader.load('./resources/modelGLTF/TreeWeb.glb', (gltf) => {
       gltf.scene.scale.set(10, 10, 10);
@@ -630,6 +630,7 @@ class ThirdPersonCameraDemo {
     });
 }
 
+//Function that load a text in the WorkInProgress Zone
 _LoadWorkingZoneText(modelPath, x, y, z, modelScale)
 {
   const loader = new GLTFLoader();
@@ -674,7 +675,6 @@ _LoadAnimatedModelFromBlender(modelPath, x, y, z, modelScale) {
     });
     });
   }
-
 
 //Function that loads one character in the EmptyZone
 _LoadStaticModelEmptyZone() {
