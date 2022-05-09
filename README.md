@@ -5,6 +5,5 @@ ThreeJS Project for TreeWeb
 This is a Sandbox Website where you can walk around the world with WASD and run with SHIFT.
 
 # Credits
-This is a project realized in collab with TreeWeb S.r.l.
-Inspired from simondevyoutube
+This is a project realized in collab with TreeWeb S.R.L. and inspired from simondevyoutube's videos.
 
