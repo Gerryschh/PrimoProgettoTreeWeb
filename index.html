@@ -15,8 +15,8 @@
     <script type="text/javascript">
 
     window.addEventListener("load", function(){
-    setInterval(deleteLoadingDelayed, 40000);
-    setInterval(deleteLoadingSfondo, 40000); 
+    setInterval(deleteLoadingDelayed, 1000);
+    setInterval(deleteLoadingSfondo, 1000); 
     });
     function deleteLoadingDelayed(){
         var overlay = document.getElementById("overlay");
@@ -37,9 +37,6 @@
     Clicca <img src="./resources/images/WASD.png" height="70" width="110"> per muoverti nel mondo virtuale.
     </h2>
 
-    <h2 id="run">
-      Usa <img src="./resources/images/SHIFT.png" height="40" width="65"> per correre.
-    </h2>
     <ul>
       <li><a data-title="Inizia l'avventura!" id="jogar-btn" onclick=lightBoxClose()>ENTRA!</a></li>
     </ul>
