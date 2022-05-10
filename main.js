@@ -6,6 +6,7 @@ import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src
 import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/materials/MeshNormalMaterial.js';
 import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/OBJLoader.js';
 import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/PointerLockControls.js';
+import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/webxr/VRButton.js';
 
 
 //Main class that instanciate all the other things
@@ -94,6 +95,16 @@ class TreeWebGame {
     pointLight1.position.set( 100, 100, 600 );
     this._scene.add(this._camera);
 
+    //Creating box for raycasting
+    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    this._cube = new THREE.Mesh( geometry, material );
+    this._scene.add( this._cube );
+
+    //VR
+    document.body.appendChild( VRButton.createButton( this._threejs ) );
+    this._threejs.xr.enabled = true;
+
     //Loading skybox
     const loader = new THREE.CubeTextureLoader();
     const texture = loader.load([
@@ -134,6 +145,7 @@ class TreeWebGame {
 
     //RAF
     this._RAF();
+    this._threejs.setAnimationLoop(this._RAF());
   }
 
   //FirstPersonMovements Controls Function
