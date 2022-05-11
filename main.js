@@ -12,12 +12,13 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
 
 			const intersectMeshes = [];
       let keyboard = [];
+      let mixers = [];
       let NPCOctahedronMesh1, NPCOctahedronMesh2, NPCOctahedronMesh3, NPCOctahedronMesh4;
 
 			init();
 			animate();
       loadPlane();
-      loadWorkingZoneText();
+      loadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 1000, 40, -330, 80);
       loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
       loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 80, 10, -500, 1);
       loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 80, 10, -500, 1);
@@ -81,7 +82,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
         NPCOctahedronMesh4 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
         NPCOctahedronMesh1.position.set(-6, 26, 107);
         NPCOctahedronMesh2.position.set(110, 26, 350);
-        NPCOctahedronMesh3.position.set(-970, 26, -100);
+        NPCOctahedronMesh3.position.set(-870, 26, -100);
         NPCOctahedronMesh4.position.set(21, 32, -603);
         myScene.add(NPCOctahedronMesh1);
         myScene.add(NPCOctahedronMesh2);
@@ -166,26 +167,28 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
         });
       }
 
+      
       //Function that load a text in the WorkInProgress Zone
       function loadWorkingZoneText(modelPath, x, y, z, modelScale) {
         const loader = new GLTFLoader();
         loader.load(modelPath, (gltf) => {
-          const model = gltf.scene;
-          model.scale.set(modelScale, modelScale, modelScale);
-          model.rotation.set(0,4.7,0);
-          model.position.set(x, y, z);
-          model.traverse(c => {
-            c.castShadow = true;
-          });
-      
-          myScene.add(model);
-          const m = new THREE.AnimationMixer(model);
-          const clips = gltf.animations;
-          clips.forEach(function(clip){
-            const action = m.clipAction(clip);
-            action.play();
-          });
-          });
+        const model = gltf.scene;
+        model.scale.set(modelScale, modelScale, modelScale);
+        model.rotation.set(0,4.7,0);
+        model.position.set(x, y, z);
+        model.traverse(c => {
+          c.castShadow = true;
+        });
+
+        myScene.add(model);
+        const m = new THREE.AnimationMixer(model);
+        mixers.push(m);
+        const clips = gltf.animations;
+        clips.forEach(function(clip){
+          const action = m.clipAction(clip);
+          action.play();
+        });
+        });
       }
 
       //Function that loads an animated model from blender
@@ -201,6 +204,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
 
         myScene.add(model);
         const m = new THREE.AnimationMixer(model);
+        mixers.push(m);
         const clips = gltf.animations;
         clips.forEach(function(clip){
           const action = m.clipAction(clip);
@@ -226,6 +230,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
         anim.setPath('./resources/actions/idleActions/');
         anim.load('SGJolleen.fbx', (anim) => {
           const m = new THREE.AnimationMixer(fbx);
+          mixers.push(m);
           const idle = m.clipAction(anim.animations[0]);
           idle.play();
           });
@@ -240,7 +245,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
           loader.load('Doozy.fbx', (fbx) => {
             fbx.scale.setScalar(0.14);
             fbx.rotation.set(0,20,0);
-            fbx.position.set(-970,0,-100);
+            fbx.position.set(-870,0,-100);
             fbx.traverse(c => {
               c.castShadow = true;
               
@@ -250,6 +255,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
             anim.setPath('./resources/actions/idleActions/');
             anim.load('WavingDoozy.fbx', (anim) => {
               const m = new THREE.AnimationMixer(fbx);
+              mixers.push(m);
               const idle = m.clipAction(anim.animations[0]);
               idle.play();
             });
@@ -274,6 +280,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
             anim.setPath('./resources/actions/idleActions/');
             anim.load('WavingAmy.fbx', (anim) => {
               const m = new THREE.AnimationMixer(fbx);
+              mixers.push(m);
               const idle = m.clipAction(anim.animations[0]);
               idle.play();
             });
@@ -298,7 +305,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
             anim.setPath('./resources/actions/idleActions/');
             anim.load('PointingAJ.fbx', (anim) => {
               const m = new THREE.AnimationMixer(fbx);
-
+              mixers.push(m);
               const idle = m.clipAction(anim.animations[0]);
               idle.play();
             });
@@ -324,7 +331,9 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
 
         let delta = clock.getDelta();
         processKeyboard(delta);
-        
+        if (mixers) {
+          mixers.map (m => m.update(delta));
+        };      
 				myRenderer.render( myScene, myCam );
         myRenderer.setAnimationLoop(animate);
 
