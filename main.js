@@ -8,372 +8,324 @@ import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm
 import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/PointerLockControls.js';
 import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/webxr/VRButton.js';
 
+let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
 
-//Main class that instanciate all the other things
-class TreeWebGame {
-  constructor() {
-    this._Initialize();
-  }
+			const intersectMeshes = [];
+      let keyboard = [];
+      let NPCOctahedronMesh1, NPCOctahedronMesh2, NPCOctahedronMesh3, NPCOctahedronMesh4;
 
-  _Initialize() {
-    this._threejs = new THREE.WebGLRenderer({
-      antialias: true,
-    });
-    this._threejs.outputEncoding = THREE.sRGBEncoding;
-    this._threejs.shadowMap.enabled = true;
-    this._threejs.shadowMap.type = THREE.PCFSoftShadowMap;
-    this._threejs.setPixelRatio(window.devicePixelRatio);
-    this._threejs.setSize(window.innerWidth, window.innerHeight);
+			init();
+			animate();
+      loadPlane();
+      loadWorkingZoneText();
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 80, 10, -500, 1);
+      loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 80, 10, -500, 1);
+      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 80, 10, -460, 1);
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -600, 1);
+      loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
+      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
 
-    document.body.appendChild(this._threejs.domElement);
+      loadModelEmptyZ();
+      loadModelWaterZ();
+      loadModelCenterZ();
+      loadModelCinemaZ();
 
-    window.addEventListener('resize', () => {
-      this._OnWindowResize();
-    }, false);
+			function init() {
 
-    //Loading Camera
-    const fov = 65;
-    const aspect = window.innerWidth / window.innerHeight;
-    const near = 1;
-    const far = 10000.0;
-    this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this._camera.position.set(50, 19, 25);
+        //Initializing Camera
+				myCam = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+			  myCam.position.set(50,19,25);
 
-    //Loading controls keys
-    this._fpsControls = new PointerLockControls( this._camera, this._threejs.domElement );
-    this._clock = new THREE.Clock();
-    document.body.addEventListener('click', ()=> {
-      this._fpsControls.lock();
-    })
-    this._keyboard = [];
-    document.addEventListener('keydown', (e) => {
-      this._keyboard[e.key] = true;
-    });
-    document.addEventListener('keyup', (e) => {
-      this._keyboard[e.key] = false;
-    });
+        //Initializing Scene and Fog
+				myScene = new THREE.Scene();
+				myScene.fog = new THREE.Fog( 0xffffff, 0, 7500 );
 
-    //Loading scene
-    this._scene = new THREE.Scene();
+        //Initializing Renderer
+				myRenderer = new THREE.WebGLRenderer( { antialias: true } );
+        myRenderer.outputEncoding = THREE.sRGBEncoding;
+        myRenderer.shadowMap.enabled = true;
+        myRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+				myRenderer.setPixelRatio( window.devicePixelRatio );
+				myRenderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( myRenderer.domElement );
 
-    //Loading OctahedronGeometry on NPC
-    const NPCOctahedronGeometry = new THREE.OctahedronGeometry(1.7, 0);
-    const NPCOctahedronMaterial = new THREE.MeshNormalMaterial ({color: 0x00ff00});
-    this.NPCOctahedronMesh1 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
-    this.NPCOctahedronMesh2 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
-    this.NPCOctahedronMesh3 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
-    this.NPCOctahedronMesh4 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
-    this.NPCOctahedronMesh1.position.set(-6, 26, 107);
-    this.NPCOctahedronMesh2.position.set(110, 26, 350);
-    this.NPCOctahedronMesh3.position.set(-970, 26, -100);
-    this.NPCOctahedronMesh4.position.set(21, 32, -603);
-    this._scene.add(this.NPCOctahedronMesh1);
-    this._scene.add(this.NPCOctahedronMesh2);
-    this._scene.add(this.NPCOctahedronMesh3);
-    this._scene.add(this.NPCOctahedronMesh4);
+        //On Window Resize
+				window.addEventListener( 'resize', onWindowResize );
 
-    //Loading cube with a video playing on it (no audio)
-    const video = document.getElementById('video');
-    const textureVideo = new THREE.VideoTexture(video);
-    const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
-    const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);
-    const mesh = new THREE.Mesh( cubo, videoMaterial);
-    mesh.position.set(-100, 600, -3000);
-    this._scene.add(mesh);
-
-    //Loading lights
-    const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
-    this._scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight( 0xffffff, 0.30 );
-    this._camera.add(pointLight);
-    pointLight.position.set( 5, 5, 5 );
-    this._scene.add(this._camera);
-
-    const pointLight1 = new THREE.PointLight( 0xffffff, 0.3 );
-    this._camera.add(pointLight1);
-    pointLight1.position.set( 100, 100, 600 );
-    this._scene.add(this._camera);
-
-    //Creating box for raycasting
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    this._cube = new THREE.Mesh( geometry, material );
-    this._scene.add( this._cube );
-
-    //VR
-    document.body.appendChild( VRButton.createButton( this._threejs ) );
-    this._threejs.xr.enabled = true;
-
-    //Loading skybox
-    const loader = new THREE.CubeTextureLoader();
-    const texture = loader.load([
-        './resources/skybox/posy.bmp',
-        './resources/skybox/posx.bmp',
-        './resources/skybox/posz.bmp',
-        './resources/skybox/negy.bmp',
-        './resources/skybox/negz.bmp',
-        './resources/skybox/negx.bmp',
-    ]);
-    texture.encoding = THREE.sRGBEncoding;
-    this._scene.background = texture;
-
-
-    this._mixers = [];
-    this._previousRAF = null;
-
-    //Loading the plane
-    this._LoadPlane();
-
-    //Loading IdleAnimatedModels
-    this._LoadStaticModelEmptyZone();
-    this._LoadStaticModelWaterZone();
-    this._LoadStaticModelCenterZone();
-    this._LoadStaticModelCinemaZone();
-
-    //Loading animated bees and butterflies
-    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
-    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 80, 10, -500, 1);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 80, 10, -500, 1);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 80, 10, -460, 1);
-    this._LoadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -600, 1);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
-    this._LoadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
-
-    //Loading Texts
-    this._LoadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 1000, 40, -330, 80);
-
-    //RAF
-    this._RAF();
-    this._threejs.setAnimationLoop(this._RAF());
-  }
-
-  //FirstPersonMovements Controls Function
-  _processKeyboard() {
-    let speed = 70;
-    let actualSpeed = speed * this._delta; 
-    if(this._keyboard['w']) {
-      this._fpsControls.moveForward(actualSpeed);
-    }
-    if (this._keyboard['s']) {
-      this._fpsControls.moveForward(-actualSpeed);
-    }
-    
-    //Up and down movements not used
-    /*if (this._keyboard['q']) {
-      this._fpsControls.getObject().position.y += actualSpeed;
-    }
-    if(this._keyboard['e']) {
-      this._fpsControls.getObject().position.y -= actualSpeed;
-    }*/
-
-    if(this._keyboard['a']) {
-      this._fpsControls.moveRight(-actualSpeed);
-    }
-    if (this._keyboard['d']) {
-      this._fpsControls.moveRight(actualSpeed);
-    }
-  }
-
-  //Function that loads the plane done with Blender
-  _LoadPlane() {
-    const loader = new GLTFLoader();
-    loader.load('./resources/modelGLTF/TreeWeb.glb', (gltf) => {
-      gltf.scene.scale.set(10, 10, 10);
-        gltf.scene.traverse(c => {
-            c.castShadow = true;
-
+        //Initializing Controls
+				fpsControls = new PointerLockControls( myCam, document.body );
+        clock = new THREE.Clock();
+				document.body.addEventListener( 'click', function () {
+					fpsControls.lock();
+				});
+        
+        document.addEventListener('keydown', (e) => {
+          keyboard[e.key] = true;
         });
-        
-        this._scene.add(gltf.scene);
-    });
-}
+        document.addEventListener('keyup', (e) => {
+          keyboard[e.key] = false;
+        });
 
-//Function that load a text in the WorkInProgress Zone
-_LoadWorkingZoneText(modelPath, x, y, z, modelScale)
-{
-  const loader = new GLTFLoader();
-  loader.load(modelPath, (gltf) => {
-    const model = gltf.scene;
-    model.scale.set(modelScale, modelScale, modelScale);
-    model.rotation.set(0,4.7,0);
-    model.position.set(x, y, z);
-    model.traverse(c => {
-      c.castShadow = true;
-    });
+				myScene.add(fpsControls.getObject());
 
-    this._scene.add(model);
-    const m = new THREE.AnimationMixer(model);
-    this._mixers.push(m);
-    const clips = gltf.animations;
-    clips.forEach(function(clip){
-      const action = m.clipAction(clip);
-      action.play();
-    });
-    });
-}
+        //Raycaster
+				myRaycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
-//Function that loads an animated model from blender
-_LoadAnimatedModelFromBlender(modelPath, x, y, z, modelScale) {
-  const loader = new GLTFLoader();
-  loader.load(modelPath, (gltf) => {
-    const model = gltf.scene;
-    model.scale.set(modelScale, modelScale, modelScale);
-    model.position.set(x, y, z);
-    model.traverse(c => {
-      c.castShadow = true;
-    });
+        //Loading OctahedronGeometry on NPC
+        const NPCOctahedronGeometry = new THREE.OctahedronGeometry(1.7, 0);
+        const NPCOctahedronMaterial = new THREE.MeshNormalMaterial ({color: 0x00ff00});
+        NPCOctahedronMesh1 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+        NPCOctahedronMesh2 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+        NPCOctahedronMesh3 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+        NPCOctahedronMesh4 = new THREE.Mesh( NPCOctahedronGeometry, NPCOctahedronMaterial);
+        NPCOctahedronMesh1.position.set(-6, 26, 107);
+        NPCOctahedronMesh2.position.set(110, 26, 350);
+        NPCOctahedronMesh3.position.set(-970, 26, -100);
+        NPCOctahedronMesh4.position.set(21, 32, -603);
+        myScene.add(NPCOctahedronMesh1);
+        myScene.add(NPCOctahedronMesh2);
+        myScene.add(NPCOctahedronMesh3);
+        myScene.add(NPCOctahedronMesh4);
 
-    this._scene.add(model);
-    const m = new THREE.AnimationMixer(model);
-    this._mixers.push(m);
-    const clips = gltf.animations;
-    clips.forEach(function(clip){
-      const action = m.clipAction(clip);
-      action.play();
-    });
-    });
-  }
+        //Loading cube with a video playing on it (no audio)
+        const video = document.getElementById('video');
+        const textureVideo = new THREE.VideoTexture(video);
+        const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
+        const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);
+        const mesh = new THREE.Mesh( cubo, videoMaterial);
+        mesh.position.set(-100, 600, -3000);
+        myScene.add(mesh);
+        intersectMeshes.push(mesh);
 
-//Function that loads one character in the EmptyZone
-_LoadStaticModelEmptyZone() {
-  const loader = new FBXLoader();
-    loader.setPath('./resources/character/');
-    loader.load('jolleen.fbx', (fbx) => {
-      fbx.scale.setScalar(0.13);
-      fbx.rotation.set(0,9.5,0);
-      fbx.position.set(110,0,350);
-      fbx.traverse(c => {
-        c.castShadow = true;
-        
-      });
+        //Loading lights
+        const ambientLight = new THREE.AmbientLight( 0xffffff, 0.9 );
+        myScene.add(ambientLight);
 
-      const anim = new FBXLoader();
-      anim.setPath('./resources/actions/idleActions/');
-      anim.load('SGJolleen.fbx', (anim) => {
-        const m = new THREE.AnimationMixer(fbx);
-        this._mixers.push(m);
-        const idle = m.clipAction(anim.animations[0]);
-        idle.play();
-      });
-      this._scene.add(fbx);
-    });
-}
+        const pointLight = new THREE.PointLight( 0xffffff, 0.5 );
+        pointLight.position.set( 5, 200, 5 );
+        myScene.add(pointLight);
 
-//Function that loads one character in the WaterZone
-_LoadStaticModelWaterZone() {
-  const loader = new FBXLoader();
-    loader.setPath('./resources/character/');
-    loader.load('Doozy.fbx', (fbx) => {
-      fbx.scale.setScalar(0.14);
-      fbx.rotation.set(0,20,0);
-      fbx.position.set(-970,0,-100);
-      fbx.traverse(c => {
-        c.castShadow = true;
-        
-      });
+        //VR
+        document.body.appendChild( VRButton.createButton( myRenderer ) );
+        myRenderer.xr.enabled = true;
+        myRenderer.xr.setReferenceSpaceType( 'local' );
 
-      const anim = new FBXLoader();
-      anim.setPath('./resources/actions/idleActions/');
-      anim.load('WavingDoozy.fbx', (anim) => {
-        const m = new THREE.AnimationMixer(fbx);
-        this._mixers.push(m);
-        const idle = m.clipAction(anim.animations[0]);
-        idle.play();
-      });
-      this._scene.add(fbx);
-    });
-}
+        //Loading skybox
+        const loader = new THREE.CubeTextureLoader();
+        const texture = loader.load([
+            './resources/skybox/posy.bmp',
+            './resources/skybox/posx.bmp',
+            './resources/skybox/posz.bmp',
+            './resources/skybox/negy.bmp',
+            './resources/skybox/negz.bmp',
+            './resources/skybox/negx.bmp',
+        ]);
+        texture.encoding = THREE.sRGBEncoding;
+        myScene.background = texture;
 
-//Function that loads one character in the CenterZone
-_LoadStaticModelCenterZone() {
-  const loader = new FBXLoader();
-    loader.setPath('./resources/character/');
-    loader.load('Amy.fbx', (fbx) => {
-      fbx.scale.setScalar(0.15);
-      fbx.rotation.set(0,9.5,0);
-      fbx.position.set(-6,0,107);
-      fbx.traverse(c => {
-        c.castShadow = true;
-        
-      });
 
-      const anim = new FBXLoader();
-      anim.setPath('./resources/actions/idleActions/');
-      anim.load('WavingAmy.fbx', (anim) => {
-        const m = new THREE.AnimationMixer(fbx);
-        this._mixers.push(m);
-        const idle = m.clipAction(anim.animations[0]);
-        idle.play();
-      });
-      this._scene.add(fbx);
-    });
-}
+			}
 
-//Function that loads one character in the CinemaZone
-_LoadStaticModelCinemaZone() {
-  const loader = new FBXLoader();
-    loader.setPath('./resources/character/');
-    loader.load('aj.fbx', (fbx) => {
-      fbx.scale.setScalar(0.15);
-      fbx.rotation.set(0,25,0);
-      fbx.position.set(20,0,-605);
-      fbx.traverse(c => {
-        c.castShadow = true;
-        
-      });
+      function processKeyboard(delta) {
+        let speed = 70;
+        let actualSpeed = speed * delta; 
+        if(keyboard['w']) {
+          fpsControls.moveForward(actualSpeed);
+        }
+        if (keyboard['s']) {
+          fpsControls.moveForward(-actualSpeed);
+        }
+    
+        //Up and down movements not used
+        /*if (keyboard['q']) {
+          fpsControls.getObject().position.y += actualSpeed;
+        }
+        if(keyboard['e']) {
+          fpsControls.getObject().position.y -= actualSpeed;
+        }*/
 
-      const anim = new FBXLoader();
-      anim.setPath('./resources/actions/idleActions/');
-      anim.load('PointingAJ.fbx', (anim) => {
-        const m = new THREE.AnimationMixer(fbx);
-        this._mixers.push(m);
-        const idle = m.clipAction(anim.animations[0]);
-        idle.play();
-      });
-      this._scene.add(fbx);
-    });
-}
-
-  _OnWindowResize() {
-    this._camera.aspect = window.innerWidth / window.innerHeight;
-    this._camera.updateProjectionMatrix();
-    this._threejs.setSize(window.innerWidth, window.innerHeight);
-  }
-
-  //Request Animation Frame for the renderer
-  _RAF() {
-    requestAnimationFrame((t) => {
-      if (this._previousRAF === null) {
-        this._previousRAF = t;
+        if(keyboard['a']) {
+          fpsControls.moveRight(-actualSpeed);
+        }
+        if (keyboard['d']) {
+          fpsControls.moveRight(actualSpeed);
+        }
       }
 
-      this._RAF();
-      this.NPCOctahedronMesh1.rotation.y +=0.017;         
-      this.NPCOctahedronMesh2.rotation.y +=0.017;
-      this.NPCOctahedronMesh3.rotation.y +=0.017;
-      this.NPCOctahedronMesh4.rotation.y +=0.017;
+      function loadPlane() {
+        const loader = new GLTFLoader();
+        loader.load('./resources/modelGLTF/TreeWeb.glb', (gltf) => {
+          gltf.scene.scale.set(9, 9, 9);
+            gltf.scene.traverse(c => {
+              c.castShadow = true;
 
-      this._delta = this._clock.getDelta();
-      this._processKeyboard(this._delta);
+            });
+        
+        myScene.add(gltf.scene);
+        });
+      }
+
+      //Function that load a text in the WorkInProgress Zone
+      function loadWorkingZoneText(modelPath, x, y, z, modelScale) {
+        const loader = new GLTFLoader();
+        loader.load(modelPath, (gltf) => {
+          const model = gltf.scene;
+          model.scale.set(modelScale, modelScale, modelScale);
+          model.rotation.set(0,4.7,0);
+          model.position.set(x, y, z);
+          model.traverse(c => {
+            c.castShadow = true;
+          });
       
-      this._threejs.render(this._scene, this._camera);
-      this._Step(t - this._previousRAF);
-      this._previousRAF = t;
-    });
-  }
+          myScene.add(model);
+          const m = new THREE.AnimationMixer(model);
+          const clips = gltf.animations;
+          clips.forEach(function(clip){
+            const action = m.clipAction(clip);
+            action.play();
+          });
+          });
+      }
 
-  _Step(timeElapsed) {
-    const timeElapsedS = timeElapsed * 0.001;
-    if (this._mixers) {
-      this._mixers.map(m => m.update(timeElapsedS));
-    }
-  }
-}
+      //Function that loads an animated model from blender
+      function loadAnimatedModelFromBlender(modelPath, x, y, z, modelScale) {
+        const loader = new GLTFLoader();
+        loader.load(modelPath, (gltf) => {
+          const model = gltf.scene;
+          model.scale.set(modelScale, modelScale, modelScale);
+          model.position.set(x, y, z);
+          model.traverse(c => {
+              c.castShadow = true;
+          });
 
+        myScene.add(model);
+        const m = new THREE.AnimationMixer(model);
+        const clips = gltf.animations;
+        clips.forEach(function(clip){
+          const action = m.clipAction(clip);
+          action.play();
+        });
+        });
+      }
 
-let _APP = null;
+      //Function that loads one character in the EmptyZone
+      function loadModelEmptyZ() {
+        const loader = new FBXLoader();
+          loader.setPath('./resources/character/');
+          loader.load('jolleen.fbx', (fbx) => {
+            fbx.scale.setScalar(0.13);
+            fbx.rotation.set(0,9.5,0);
+            fbx.position.set(110,0,350);
+            fbx.traverse(c => {
+              c.castShadow = true;
+        
+            });
 
-window.addEventListener('DOMContentLoaded', () => {
-  _APP = new TreeWebGame();
-});
+        const anim = new FBXLoader();
+        anim.setPath('./resources/actions/idleActions/');
+        anim.load('SGJolleen.fbx', (anim) => {
+          const m = new THREE.AnimationMixer(fbx);
+          const idle = m.clipAction(anim.animations[0]);
+          idle.play();
+          });
+        myScene.add(fbx);
+        });
+      }
+
+      //Function that loads one character in the WaterZone
+      function loadModelWaterZ() {
+        const loader = new FBXLoader();
+          loader.setPath('./resources/character/');
+          loader.load('Doozy.fbx', (fbx) => {
+            fbx.scale.setScalar(0.14);
+            fbx.rotation.set(0,20,0);
+            fbx.position.set(-970,0,-100);
+            fbx.traverse(c => {
+              c.castShadow = true;
+              
+            });
+      
+            const anim = new FBXLoader();
+            anim.setPath('./resources/actions/idleActions/');
+            anim.load('WavingDoozy.fbx', (anim) => {
+              const m = new THREE.AnimationMixer(fbx);
+              const idle = m.clipAction(anim.animations[0]);
+              idle.play();
+            });
+            myScene.add(fbx);
+          });
+      }
+
+      //Function that loads one character in the CenterZone
+      function loadModelCenterZ() {
+        const loader = new FBXLoader();
+          loader.setPath('./resources/character/');
+          loader.load('Amy.fbx', (fbx) => {
+            fbx.scale.setScalar(0.15);
+            fbx.rotation.set(0,9.5,0);
+            fbx.position.set(-6,0,107);
+            fbx.traverse(c => {
+              c.castShadow = true;
+              
+            });
+      
+            const anim = new FBXLoader();
+            anim.setPath('./resources/actions/idleActions/');
+            anim.load('WavingAmy.fbx', (anim) => {
+              const m = new THREE.AnimationMixer(fbx);
+              const idle = m.clipAction(anim.animations[0]);
+              idle.play();
+            });
+            myScene.add(fbx);
+          });
+      }
+
+      //Function that loads one character in the CinemaZone
+      function loadModelCinemaZ() {
+        const loader = new FBXLoader();
+          loader.setPath('./resources/character/');
+          loader.load('aj.fbx', (fbx) => {
+            fbx.scale.setScalar(0.15);
+            fbx.rotation.set(0,25,0);
+            fbx.position.set(20,0,-605);
+            fbx.traverse(c => {
+              c.castShadow = true;
+              
+            });
+      
+            const anim = new FBXLoader();
+            anim.setPath('./resources/actions/idleActions/');
+            anim.load('PointingAJ.fbx', (anim) => {
+              const m = new THREE.AnimationMixer(fbx);
+
+              const idle = m.clipAction(anim.animations[0]);
+              idle.play();
+            });
+            myScene.add(fbx);
+          });
+      }
+
+			function onWindowResize() {
+
+				myCam.aspect = window.innerWidth / window.innerHeight;
+				myCam.updateProjectionMatrix();
+
+				myRenderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
+        NPCOctahedronMesh1.rotation.y +=0.017;         
+        NPCOctahedronMesh2.rotation.y +=0.017;
+        NPCOctahedronMesh3.rotation.y +=0.017;
+        NPCOctahedronMesh4.rotation.y +=0.017;
+
+        let delta = clock.getDelta();
+        processKeyboard(delta);
+        
+				myRenderer.render( myScene, myCam );
+        myRenderer.setAnimationLoop(animate);
+
+			}
