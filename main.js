@@ -1,16 +1,23 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.127.0/build/three.module.js';
 
-import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/GLTFLoader.js';
-import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/geometries/OctahedronGeometry.js';
-import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/src/materials/MeshNormalMaterial.js';
-import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/OBJLoader.js';
-import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/controls/PointerLockControls.js';
-import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/webxr/VRButton.js';
+import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/loaders/FBXLoader.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/loaders/GLTFLoader.js';
+import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/src/geometries/OctahedronGeometry.js';
+import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/src/materials/MeshNormalMaterial.js';
+import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/loaders/OBJLoader.js';
+import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/controls/PointerLockControls.js';
+import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/webxr/VRButton.js';
+import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/webxr/XRControllerModelFactory.js';
+import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/webxr/XRHandModelFactory.js';
 
-let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
+let myCam, myScene, myRenderer, fpsControls, clock;
 
-			const intersectMeshes = [];
+      var myRay = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+      let hand1, hand2;
+      let controller1, controller2;
+      let controllerGrip1, controllerGrip2;
+			let intersectMeshes = [];
       let keyboard = [];
       let mixers = [];
       let NPCOctahedronMesh1, NPCOctahedronMesh2, NPCOctahedronMesh3, NPCOctahedronMesh4;
@@ -70,9 +77,6 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
 
 				myScene.add(fpsControls.getObject());
 
-        //Raycaster
-				myRaycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
-
         //Loading OctahedronGeometry on NPC
         const NPCOctahedronGeometry = new THREE.OctahedronGeometry(1.7, 0);
         const NPCOctahedronMaterial = new THREE.MeshNormalMaterial ({color: 0x00ff00});
@@ -83,7 +87,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
         NPCOctahedronMesh1.position.set(-6, 26, 107);
         NPCOctahedronMesh2.position.set(110, 26, 350);
         NPCOctahedronMesh3.position.set(-870, 26, -100);
-        NPCOctahedronMesh4.position.set(21, 32, -603);
+        NPCOctahedronMesh4.position.set(21, 32, -540);
         myScene.add(NPCOctahedronMesh1);
         myScene.add(NPCOctahedronMesh2);
         myScene.add(NPCOctahedronMesh3);
@@ -107,10 +111,63 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
         pointLight.position.set( 5, 200, 5 );
         myScene.add(pointLight);
 
-        //VR
+        //Setupping VR
         document.body.appendChild( VRButton.createButton( myRenderer ) );
         myRenderer.xr.enabled = true;
-        myRenderer.xr.setReferenceSpaceType( 'local' );
+        myRenderer.xr.setReferenceSpaceType( 'local-floor' );
+
+        const cameraGroup = new THREE.Group();
+        cameraGroup.position.y = 0;  // Set the initial VR Headset Position.
+        
+        //When user turn on the VR mode.
+        myRenderer.xr.addEventListener('sessionstart', function () {
+            myScene.add(cameraGroup);
+            cameraGroup.add(myCam);
+        });
+        //When user turn off the VR mode.
+        myRenderer.xr.addEventListener('sessionend', function () {
+          myScene.remove(cameraGroup);
+          cameraGroup.remove(myCam);
+        });
+
+        controller1 = myRenderer.xr.getController( 0 );
+				myScene.add( controller1 );
+
+				controller2 = myRenderer.xr.getController( 1 );
+				myScene.add( controller2 );
+
+				const controllerModelFactory = new XRControllerModelFactory();
+				const handModelFactory = new XRHandModelFactory();
+
+				// Hand 1
+				controllerGrip1 = myRenderer.xr.getControllerGrip( 0 );
+				controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
+				myScene.add( controllerGrip1 );
+
+				hand1 = myRenderer.xr.getHand( 0 );
+				hand1.add( handModelFactory.createHandModel( hand1 ) );
+
+				myScene.add( hand1 );
+
+				// Hand 2
+				controllerGrip2 = myRenderer.xr.getControllerGrip( 1 );
+				controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
+				myScene.add( controllerGrip2 );
+
+				hand2 = myRenderer.xr.getHand( 1 );
+				hand2.add( handModelFactory.createHandModel( hand2 ) );
+				myScene.add( hand2 );
+
+				//
+
+				const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+
+				const line = new THREE.Line( geometry );
+				line.name = 'line';
+				line.scale.z = 5;
+
+				controller1.add( line.clone() );
+				controller2.add( line.clone() );
 
         //Loading skybox
         const loader = new THREE.CubeTextureLoader();
@@ -125,8 +182,34 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
         texture.encoding = THREE.sRGBEncoding;
         myScene.background = texture;
 
+        //try
+        const geometry2 = new THREE.BoxGeometry( 10, 10, 10 );
+        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        const cube = new THREE.Mesh( geometry2, material );
+        cube.position.set(0,10,0);
+        myScene.add( cube );
+        intersectMeshes.push(cube);
+        
+        document.addEventListener( 'mousedown', function( event ) {
+    
+          var rect = myRenderer.domElement.getBoundingClientRect();
+         mouse.x = ( ( event.clientX - rect.left ) / ( rect.width - rect.left ) ) * 2 - 1;
+         mouse.y = - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1;
+           
+           myRay.setFromCamera( mouse, myCam );
+            
+             var intersects = myRay.intersectObjects( intersectMeshes );
+         
+             if ( intersects.length > 0 ) {
+                 
+                 alert("hit");
+                 
+             }
+         
+         }, false );
 
-			}
+      }
+      
 
       function processKeyboard(delta) {
         let speed = 70;
@@ -295,7 +378,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
           loader.load('aj.fbx', (fbx) => {
             fbx.scale.setScalar(0.15);
             fbx.rotation.set(0,25,0);
-            fbx.position.set(20,0,-605);
+            fbx.position.set(20,0,-540);
             fbx.traverse(c => {
               c.castShadow = true;
               
@@ -322,7 +405,7 @@ let myCam, myScene, myRenderer, fpsControls, clock, myRaycaster;
 
 			}
 
-			function animate() {
+			function animate(event) {
 
         NPCOctahedronMesh1.rotation.y +=0.017;         
         NPCOctahedronMesh2.rotation.y +=0.017;
