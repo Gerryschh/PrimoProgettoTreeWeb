@@ -1,38 +1,59 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.127.0/build/three.module.js';
+import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js'
 
-import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/loaders/FBXLoader.js';
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/loaders/GLTFLoader.js';
-import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/src/geometries/OctahedronGeometry.js';
-import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/src/materials/MeshNormalMaterial.js';
-import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/loaders/OBJLoader.js';
-import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/controls/PointerLockControls.js';
-import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/webxr/VRButton.js';
-import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/webxr/XRControllerModelFactory.js';
-import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.127.0/examples/jsm/webxr/XRHandModelFactory.js';
+import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/FBXLoader.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
+import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/src/geometries/OctahedronGeometry.js';
+import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/src/materials/MeshNormalMaterial.js';
+import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/OBJLoader.js';
+import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/controls/PointerLockControls.js';
+import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/VRButton.js';
+import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRControllerModelFactory.js';
+import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRHandModelFactory.js';
 
-let myCam, myScene, myRenderer, fpsControls, clock;
+import * as CANNON from './dist/cannon-es.js';
+import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
+import { PointerLockControlsCannon } from './js/PointerLockControlsCannon.js';
+
+
+let myCam, myScene, myRenderer, stats;
 
       var myRay = new THREE.Raycaster();
       var mouse = new THREE.Vector2();
+      let material = new THREE.MeshLambertMaterial({ color: 0xdddddd });
       let hand1, hand2;
       let controller1, controller2;
       let controllerGrip1, controllerGrip2;
 			let intersectMeshes = [];
-      let keyboard = [];
       let mixers = [];
       let NPCOctahedronMesh1, NPCOctahedronMesh2, NPCOctahedronMesh3, NPCOctahedronMesh4;
 
+      // cannon.js variables
+      let world;
+      let controls;
+      const timeStep = 1 / 60;
+      let lastCallTime = performance.now();
+      let sphereShape;
+      let sphereBody;
+      let physicsMaterial;
+      const balls = [];
+      const ballMeshes = [];
+      const boxes = [];
+      const boxMeshes = [];
+
 			init();
+      initCannon();
+      initPointerLock();
+
 			animate();
       loadPlane();
-      loadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 1000, 40, -330, 80);
-      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -100, 1);
-      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 80, 10, -500, 1);
-      loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 80, 10, -500, 1);
-      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 80, 10, -460, 1);
-      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -60, 10, -600, 1);
-      loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 60, 15, -350, 0.7);
-      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 60, 15, -350, 0.7);
+      loadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 111, 4.4, -36.6, 8.8);
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 8.8, 1.1, -55.5, 0.11);
+      loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 8.8, 1.1, -55.5, 0.11);
+      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 8.8, 1.1, -51.1, 0.11);
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.66, 1.1, -66.6, 0.11);
+      loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 6.66, 1.66, -38.8, 0.077);
+      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 6.66, 1.66, -38.8, 0.077);
 
       loadModelEmptyZ();
       loadModelWaterZ();
@@ -42,40 +63,28 @@ let myCam, myScene, myRenderer, fpsControls, clock;
 			function init() {
 
         //Initializing Camera
-				myCam = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
-			  myCam.position.set(50,19,25);
+				myCam = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
         //Initializing Scene and Fog
 				myScene = new THREE.Scene();
-				myScene.fog = new THREE.Fog( 0xffffff, 0, 7500 );
+				myScene.fog = new THREE.Fog(0xECFFE7, 0, 600);
 
         //Initializing Renderer
 				myRenderer = new THREE.WebGLRenderer( { antialias: true } );
-        myRenderer.outputEncoding = THREE.sRGBEncoding;
+        //myRenderer.outputEncoding = THREE.sRGBEncoding;
+        myRenderer.setClearColor(myScene.fog.color);
         myRenderer.shadowMap.enabled = true;
         myRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
-				myRenderer.setPixelRatio( window.devicePixelRatio );
+				//myRenderer.setPixelRatio( window.devicePixelRatio );
 				myRenderer.setSize( window.innerWidth, window.innerHeight );
 				document.body.appendChild( myRenderer.domElement );
 
+        // Stats.js
+        stats = new Stats();
+        document.body.appendChild(stats.dom);
+
         //On Window Resize
 				window.addEventListener( 'resize', onWindowResize );
-
-        //Initializing Controls
-				fpsControls = new PointerLockControls( myCam, document.body );
-        clock = new THREE.Clock();
-				document.body.addEventListener( 'click', function () {
-					fpsControls.lock();
-				});
-        
-        document.addEventListener('keydown', (e) => {
-          keyboard[e.key] = true;
-        });
-        document.addEventListener('keyup', (e) => {
-          keyboard[e.key] = false;
-        });
-
-				myScene.add(fpsControls.getObject());
 
         //Loading OctahedronGeometry on NPC
         const NPCOctahedronGeometry = new THREE.OctahedronGeometry(1.7, 0);
@@ -104,13 +113,13 @@ let myCam, myScene, myRenderer, fpsControls, clock;
         intersectMeshes.push(mesh);
 
         //Loading lights
-        const ambientLight = new THREE.AmbientLight( 0xffffff, 0.9 );
+        const ambientLight = new THREE.AmbientLight( 0xffffff, 1 );
         myScene.add(ambientLight);
 
-        const pointLight = new THREE.PointLight( 0xffffff, 0.5 );
-        pointLight.position.set( 5, 200, 5 );
+        const pointLight = new THREE.PointLight( 0xffffff, 1.1 );
+        pointLight.position.set( 0, 120, 0 );
         myScene.add(pointLight);
-
+/*
         //Setupping VR
         document.body.appendChild( VRButton.createButton( myRenderer ) );
         myRenderer.xr.enabled = true;
@@ -158,8 +167,6 @@ let myCam, myScene, myRenderer, fpsControls, clock;
 				hand2.add( handModelFactory.createHandModel( hand2 ) );
 				myScene.add( hand2 );
 
-				//
-
 				const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
 
 				const line = new THREE.Line( geometry );
@@ -168,7 +175,7 @@ let myCam, myScene, myRenderer, fpsControls, clock;
 
 				controller1.add( line.clone() );
 				controller2.add( line.clone() );
-
+*/
         //Loading skybox
         const loader = new THREE.CubeTextureLoader();
         const texture = loader.load([
@@ -183,10 +190,10 @@ let myCam, myScene, myRenderer, fpsControls, clock;
         myScene.background = texture;
 
         //try
-        const geometry2 = new THREE.BoxGeometry( 10, 10, 10 );
+        const geometry2 = new THREE.BoxGeometry( 1, 1, 1 );
         const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
         const cube = new THREE.Mesh( geometry2, material );
-        cube.position.set(0,10,0);
+        cube.position.set(0,1,0);
         myScene.add( cube );
         intersectMeshes.push(cube);
         
@@ -210,37 +217,193 @@ let myCam, myScene, myRenderer, fpsControls, clock;
 
       }
       
+      function initCannon() {
+        world = new CANNON.World()
 
-      function processKeyboard(delta) {
-        let speed = 70;
-        let actualSpeed = speed * delta; 
-        if(keyboard['w']) {
-          fpsControls.moveForward(actualSpeed);
-        }
-        if (keyboard['s']) {
-          fpsControls.moveForward(-actualSpeed);
-        }
-    
-        //Up and down movements not used
-        /*if (keyboard['q']) {
-          fpsControls.getObject().position.y += actualSpeed;
-        }
-        if(keyboard['e']) {
-          fpsControls.getObject().position.y -= actualSpeed;
-        }*/
+        // Tweak contact properties.
+        // Contact stiffness - use to make softer/harder contacts
+        world.defaultContactMaterial.contactEquationStiffness = 1e9
 
-        if(keyboard['a']) {
-          fpsControls.moveRight(-actualSpeed);
+        // Stabilization time in number of timesteps
+        world.defaultContactMaterial.contactEquationRelaxation = 4
+
+        const solver = new CANNON.GSSolver()
+        solver.iterations = 7
+        solver.tolerance = 0.1
+        world.solver = new CANNON.SplitSolver(solver)
+        // use this to test non-split solver
+        // world.solver = solver
+
+        world.gravity.set(0, -20, 0)
+
+        // Create a slippery material (friction coefficient = 0.0)
+        physicsMaterial = new CANNON.Material('physics')
+        const physics_physics = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, {
+          friction: 0.0,
+          restitution: 0.3,
+        })
+
+        // We must add the contact materials to the world
+        world.addContactMaterial(physics_physics)
+
+        // Create the user collision sphere
+        const radius = 1.3
+        sphereShape = new CANNON.Sphere(radius)
+        sphereBody = new CANNON.Body({ mass: 5, material: physicsMaterial })
+        sphereBody.addShape(sphereShape)
+        sphereBody.position.set(0, 5, 0)
+        sphereBody.linearDamping = 0.9
+        world.addBody(sphereBody)
+
+        // Create the ground plane
+        const groundShape = new CANNON.Plane()
+        const groundBody = new CANNON.Body({ mass: 0, material: physicsMaterial })
+        groundBody.addShape(groundShape)
+        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
+        world.addBody(groundBody)
+
+        // Add boxes both in cannon.js and three.js
+        const halfExtents = new CANNON.Vec3(1, 1, 1)
+        const boxShape = new CANNON.Box(halfExtents)
+        const boxGeometry = new THREE.BoxBufferGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2)
+
+        for (let i = 0; i < 3; i++) {
+          const boxBody = new CANNON.Body({ mass: 5 })
+          boxBody.addShape(boxShape)
+          const boxMesh = new THREE.Mesh(boxGeometry, material)
+
+          const x = (1 - 0.5) * 20
+          const y = (2 - 0.5) * 1 + 1
+          const z = (3 - 0.5) * 20
+
+          boxBody.position.set(x, y, z)
+          boxMesh.position.copy(boxBody.position)
+
+          boxMesh.castShadow = true
+          boxMesh.receiveShadow = true
+
+          world.addBody(boxBody)
+          myScene.add(boxMesh)
+          boxes.push(boxBody)
+          boxMeshes.push(boxMesh)
         }
-        if (keyboard['d']) {
-          fpsControls.moveRight(actualSpeed);
+
+        // Add linked boxes
+        const size = 0.5
+        const mass = 0.3
+        const space = 0.1 * size
+        const N = 5
+        const halfExtents2 = new CANNON.Vec3(size, size, size * 0.1)
+        const boxShape2 = new CANNON.Box(halfExtents2)
+        const boxGeometry2 = new THREE.BoxBufferGeometry(halfExtents2.x * 2, halfExtents2.y * 2, halfExtents2.z * 2)
+
+        let last
+        for (let i = 0; i < N; i++) {
+          // Make the fist one static to support the others
+          const boxBody = new CANNON.Body({ mass: i === 0 ? 0 : mass })
+          boxBody.addShape(boxShape2)
+          const boxMesh = new THREE.Mesh(boxGeometry2, material)
+          boxBody.position.set(60,10,20)
+          boxBody.linearDamping = 0.01
+          boxBody.angularDamping = 0.01
+
+          boxMesh.castShadow = true
+          boxMesh.receiveShadow = true
+
+          world.addBody(boxBody)
+          myScene.add(boxMesh)
+          boxes.push(boxBody)
+          boxMeshes.push(boxMesh)
+
+          if (i > 0) {
+            // Connect the body to the last one
+            const constraint1 = new CANNON.PointToPointConstraint(
+              boxBody,
+              new CANNON.Vec3(-size, size + space, 0),
+              last,
+              new CANNON.Vec3(-size, -size - space, 0)
+            )
+            const constranit2 = new CANNON.PointToPointConstraint(
+              boxBody,
+              new CANNON.Vec3(size, size + space, 0),
+              last,
+              new CANNON.Vec3(size, -size - space, 0)
+            )
+            world.addConstraint(constraint1)
+            world.addConstraint(constranit2)
+          }
+
+          last = boxBody
         }
+
+        // The shooting balls
+        const shootVelocity = 15
+        const ballShape = new CANNON.Sphere(0.2)
+        const ballGeometry = new THREE.SphereBufferGeometry(ballShape.radius, 32, 32)
+
+        // Returns a vector pointing the the diretion the camera is at
+        function getShootDirection() {
+          const vector = new THREE.Vector3(0, 0, 1)
+          vector.unproject(myCam)
+          const ray = new THREE.Ray(sphereBody.position, vector.sub(sphereBody.position).normalize())
+          return ray.direction
+        }
+
+        window.addEventListener('click', (event) => {
+          if (!controls.enabled) {
+            return
+          }
+
+          const ballBody = new CANNON.Body({ mass: 1 })
+          ballBody.addShape(ballShape)
+          const ballMesh = new THREE.Mesh(ballGeometry, material)
+
+          ballMesh.castShadow = true
+          ballMesh.receiveShadow = true
+
+          world.addBody(ballBody)
+          myScene.add(ballMesh)
+          balls.push(ballBody)
+          ballMeshes.push(ballMesh)
+
+          const shootDirection = getShootDirection()
+          ballBody.velocity.set(
+            shootDirection.x * shootVelocity,
+            shootDirection.y * shootVelocity,
+            shootDirection.z * shootVelocity
+          )
+
+          // Move the ball outside the player sphere
+          const x = sphereBody.position.x + shootDirection.x * (sphereShape.radius * 1.02 + ballShape.radius)
+          const y = sphereBody.position.y + shootDirection.y * (sphereShape.radius * 1.02 + ballShape.radius)
+          const z = sphereBody.position.z + shootDirection.z * (sphereShape.radius * 1.02 + ballShape.radius)
+          ballBody.position.set(x, y, z)
+          ballMesh.position.copy(ballBody.position)
+        })
       }
+
+      function initPointerLock() {
+        controls = new PointerLockControlsCannon(myCam, sphereBody)
+        myScene.add(controls.getObject())
+
+        document.body.addEventListener('click', () => {
+          controls.lock()
+        })
+
+        controls.addEventListener('lock', () => {
+          controls.enabled = true
+        })
+
+        controls.addEventListener('unlock', () => {
+          controls.enabled = false
+        })
+      }
+
 
       function loadPlane() {
         const loader = new GLTFLoader();
         loader.load('./resources/modelGLTF/TreeWeb.glb', (gltf) => {
-          gltf.scene.scale.set(9, 9, 9);
+          gltf.scene.scale.set(0.8, 0.8, 0.8);
             gltf.scene.traverse(c => {
               c.castShadow = true;
 
@@ -301,9 +464,9 @@ let myCam, myScene, myRenderer, fpsControls, clock;
         const loader = new FBXLoader();
           loader.setPath('./resources/character/');
           loader.load('jolleen.fbx', (fbx) => {
-            fbx.scale.setScalar(0.13);
+            fbx.scale.setScalar(0.014);
             fbx.rotation.set(0,9.5,0);
-            fbx.position.set(110,0,350);
+            fbx.position.set(12.2, 0, 38.8);
             fbx.traverse(c => {
               c.castShadow = true;
         
@@ -326,9 +489,9 @@ let myCam, myScene, myRenderer, fpsControls, clock;
         const loader = new FBXLoader();
           loader.setPath('./resources/character/');
           loader.load('Doozy.fbx', (fbx) => {
-            fbx.scale.setScalar(0.14);
-            fbx.rotation.set(0,20,0);
-            fbx.position.set(-870,0,-100);
+            fbx.scale.setScalar(0.015);
+            fbx.rotation.set(0,2,22,0);
+            fbx.position.set(-96.6,0,-11.1);
             fbx.traverse(c => {
               c.castShadow = true;
               
@@ -351,9 +514,9 @@ let myCam, myScene, myRenderer, fpsControls, clock;
         const loader = new FBXLoader();
           loader.setPath('./resources/character/');
           loader.load('Amy.fbx', (fbx) => {
-            fbx.scale.setScalar(0.15);
-            fbx.rotation.set(0,9.5,0);
-            fbx.position.set(-6,0,107);
+            fbx.scale.setScalar(0.016);
+            fbx.rotation.set(0,1.05,0);
+            fbx.position.set(-0.66,0,11.88);
             fbx.traverse(c => {
               c.castShadow = true;
               
@@ -376,9 +539,9 @@ let myCam, myScene, myRenderer, fpsControls, clock;
         const loader = new FBXLoader();
           loader.setPath('./resources/character/');
           loader.load('aj.fbx', (fbx) => {
-            fbx.scale.setScalar(0.15);
-            fbx.rotation.set(0,25,0);
-            fbx.position.set(20,0,-540);
+            fbx.scale.setScalar(0.016);
+            fbx.rotation.set(0,2.77,0);
+            fbx.position.set(2.22,0,-60);
             fbx.traverse(c => {
               c.castShadow = true;
               
@@ -405,17 +568,38 @@ let myCam, myScene, myRenderer, fpsControls, clock;
 
 			}
 
-			function animate(event) {
+			function animate() {
 
         NPCOctahedronMesh1.rotation.y +=0.017;         
         NPCOctahedronMesh2.rotation.y +=0.017;
         NPCOctahedronMesh3.rotation.y +=0.017;
         NPCOctahedronMesh4.rotation.y +=0.017;
 
-        let delta = clock.getDelta();
-        processKeyboard(delta);
+        const time = performance.now() / 1000;
+        const dt = time - lastCallTime;
+        lastCallTime = time;
+
+        if (controls.enabled) {
+          world.step(timeStep, dt)
+
+          // Update ball positions
+          for (let i = 0; i < balls.length; i++) {
+            ballMeshes[i].position.copy(balls[i].position)
+            ballMeshes[i].quaternion.copy(balls[i].quaternion)
+          }
+
+          // Update box positions
+          for (let i = 0; i < boxes.length; i++) {
+            boxMeshes[i].position.copy(boxes[i].position)
+            boxMeshes[i].quaternion.copy(boxes[i].quaternion)
+          }
+        }
+
+        controls.update(dt);
+        stats.update();
+
         if (mixers) {
-          mixers.map (m => m.update(delta));
+          mixers.map (m => m.update(dt));
         };      
 				myRenderer.render( myScene, myCam );
         myRenderer.setAnimationLoop(animate);
