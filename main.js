@@ -19,7 +19,12 @@ let myCam, myScene, myRenderer, stats;
 
       var myRay = new THREE.Raycaster();
       var mouse = new THREE.Vector2();
-      let material = new THREE.MeshLambertMaterial({ color: 0xdddddd });
+      let material = new THREE.MeshPhongMaterial({
+        color : 0xffffff,
+        opacity: 0,
+        transparent: true,
+      });
+      let materialPalleGrosse = new THREE.MeshBasicMaterial();
       let hand1, hand2;
       let controller1, controller2;
       let controllerGrip1, controllerGrip2;
@@ -234,7 +239,7 @@ let myCam, myScene, myRenderer, stats;
         // use this to test non-split solver
         // world.solver = solver
 
-        world.gravity.set(0, -20, 0)
+        world.gravity.set(0, -45, 0)
 
         // Create a slippery material (friction coefficient = 0.0)
         physicsMaterial = new CANNON.Material('physics')
@@ -247,11 +252,11 @@ let myCam, myScene, myRenderer, stats;
         world.addContactMaterial(physics_physics)
 
         // Create the user collision sphere
-        const radius = 1.3
+        const radius = 2
         sphereShape = new CANNON.Sphere(radius)
         sphereBody = new CANNON.Body({ mass: 5, material: physicsMaterial })
         sphereBody.addShape(sphereShape)
-        sphereBody.position.set(0, 5, 0)
+        sphereBody.position.set(0, 2, 0)
         sphereBody.linearDamping = 0.9
         world.addBody(sphereBody)
 
@@ -263,11 +268,49 @@ let myCam, myScene, myRenderer, stats;
         world.addBody(groundBody)
 
         // Add boxes both in cannon.js and three.js
-        const halfExtents = new CANNON.Vec3(1, 1, 1)
+        const halfExtents = new CANNON.Vec3(11, 5, 0.5)
         const boxShape = new CANNON.Box(halfExtents)
-        const boxGeometry = new THREE.BoxBufferGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2)
+        const boxGeometry = new THREE.BoxBufferGeometry(halfExtents.x *2 , halfExtents.y *2, halfExtents.z *2)
 
-        for (let i = 0; i < 3; i++) {
+        // Adding a hitboxes for fences WORKSITE
+        const muro1 = new CANNON.Body({ mass: 50 })
+        muro1.addShape(boxShape)
+        const muroMesh = new THREE.Mesh(boxGeometry, material)
+        muro1.position.set(20, 6, 3.6)
+        muro1.rotation = 32
+        muro1.castShadow = true;
+        muro1.receiveShadow = true;
+        world.addBody(muro1)
+        myScene.add(muroMesh)
+        boxes.push(muro1)
+        boxMeshes.push(muroMesh)
+
+        const muro2 = new CANNON.Body({ mass: 50 })
+        muro2.addShape(boxShape)
+        const muroMesh2 = new THREE.Mesh(boxGeometry, material)
+        muro2.position.set(20, 6, -4)
+        muro2.rotation = 32
+        muro2.castShadow = true;
+        muro2.receiveShadow = true;
+        world.addBody(muro2)
+        myScene.add(muroMesh2)
+        boxes.push(muro2)
+        boxMeshes.push(muroMesh2)
+
+        
+        // Adding invisible boxes
+        /*const muro = new CANNON.Body({ mass: 50 })
+        muro.addShape(boxShape)
+        const muroMesh = new THREE.Mesh(boxGeometry, material)
+        muro.position.set(2, 0, 3)
+        muro.castShadow = true;
+        muro.receiveShadow = true;
+        world.addBody(muro)
+        myScene.add(muroMesh)
+        boxes.push(muro)
+        boxMeshes.push(muroMesh)*/
+
+        /*for (let i = 0; i < 3; i++) {
           const boxBody = new CANNON.Body({ mass: 5 })
           boxBody.addShape(boxShape)
           const boxMesh = new THREE.Mesh(boxGeometry, material)
@@ -286,7 +329,7 @@ let myCam, myScene, myRenderer, stats;
           myScene.add(boxMesh)
           boxes.push(boxBody)
           boxMeshes.push(boxMesh)
-        }
+        }*/
 
         // Add linked boxes
         const size = 0.5
@@ -356,7 +399,7 @@ let myCam, myScene, myRenderer, stats;
 
           const ballBody = new CANNON.Body({ mass: 1 })
           ballBody.addShape(ballShape)
-          const ballMesh = new THREE.Mesh(ballGeometry, material)
+          const ballMesh = new THREE.Mesh(ballGeometry, materialPalleGrosse)
 
           ballMesh.castShadow = true
           ballMesh.receiveShadow = true
