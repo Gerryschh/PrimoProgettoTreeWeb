@@ -14,6 +14,10 @@ import * as CANNON from './dist/cannon-es.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
 import { PointerLockControlsCannon } from './js/PointerLockControlsCannon.js';
 
+/**
+ * @author Gerryschh / https://github.com/Gerryschh
+ * @author miche / https://github.com/michelangelo26
+ */
 
 let myCam, myScene, myRenderer, stats;
 
