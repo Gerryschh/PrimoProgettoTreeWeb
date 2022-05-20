@@ -56,18 +56,19 @@ let myCam, myScene, myRenderer, stats;
 			animate();
       loadPlane();
       loadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 111, 4.4, -36.6, 8.8);
-      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
+      /*loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
       loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 8.8, 1.1, -55.5, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 8.8, 1.1, -55.5, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 8.8, 1.1, -51.1, 0.11);
       loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.66, 1.1, -66.6, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 6.66, 1.66, -38.8, 0.077);
-      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 6.66, 1.66, -38.8, 0.077);
+      loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 6.66, 1.66, -38.8, 0.077);*/
+      loadAnimatedModelFromBlender('./resources/animals/bear.gltf', 0, 0, 0, 1.3);
 
-      loadModelEmptyZ();
-      loadModelWaterZ();
-      loadModelCenterZ();
-      loadModelCinemaZ();
+      //loadModelEmptyZ();
+      //loadModelWaterZ();
+      //loadModelCenterZ();
+      //loadModelCinemaZ();
 
 			function init() {
 
@@ -115,9 +116,9 @@ let myCam, myScene, myRenderer, stats;
         const video = document.getElementById('video');
         const textureVideo = new THREE.VideoTexture(video);
         const videoMaterial = new THREE.MeshBasicMaterial ({ map : textureVideo});
-        const cubo = new THREE.BoxGeometry(1920/(1.2), 1080/(1.2), 1);
+        const cubo = new THREE.BoxGeometry(183.33/(1.2), 90/(1.2), 1);
         const mesh = new THREE.Mesh( cubo, videoMaterial);
-        mesh.position.set(-100, 600, -3000);
+        mesh.position.set(0, 30, -190);
         myScene.add(mesh);
         intersectMeshes.push(mesh);
 
@@ -200,7 +201,11 @@ let myCam, myScene, myRenderer, stats;
 
         //try
         const geometry2 = new THREE.BoxGeometry( 1, 1, 1 );
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        const material = new THREE.MeshPhongMaterial({
+          color : 0xffffff,
+          opacity: 0,
+          transparent: true,
+        });
         const cube = new THREE.Mesh( geometry2, material );
         cube.position.set(0,1,0);
         myScene.add( cube );
