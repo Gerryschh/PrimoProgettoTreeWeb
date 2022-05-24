@@ -1,14 +1,12 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js'
-
-
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/VRButton.js';
 import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRControllerModelFactory.js';
 import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRHandModelFactory.js';
 
-import * as CANNON from './dist/cannon-es.js';
+import * as CANNON from '/dist/cannon-es.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
-import { PointerLockControlsCannon } from './js/PointerLockControlsCannon.js';
+import { PointerLockControlsCannon } from '/js/PointerLockControlsCannon.js';
 
 /**
  * @author Gerryschh / https://github.com/Gerryschh
@@ -52,11 +50,13 @@ let myCam, myScene, myRenderer, stats;
 			animate();
       loadPlane();
       loadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 90, 6, -36.6, 8.8);
-      /*loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
+      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
       loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 8.8, 1.1, -55.5, 0.11);
+      loadAnimatedModelFromBlender('./resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
+      loadAnimatedModelFromBlender('./resources/animals/farfallaAnimated.gltf', 8.8, 1.1, -55.5, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 8.8, 1.1, -55.5, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 8.8, 1.1, -51.1, 0.11);
-      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.66, 1.1, -66.6, 0.11);
+      loadAnimatedModelFromBlender('./resources/animals/farfallaAnimated.gltf', -6.66, 1.1, -66.6, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 6.66, 1.66, -38.8, 0.077);
       loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 6.66, 1.66, -38.8, 0.077);
       //CENTER ZONE
@@ -68,7 +68,7 @@ let myCam, myScene, myRenderer, stats;
       //WATER ZONE
       loadAnimatedModelFromBlenderWithRotation('./resources/animals/pantera.gltf', -78, 0, -9, 1.3, 1.7);
       //CINEMA ZONE
-      loadAnimatedModelFromBlenderWithRotation('./resources/animals/panda.gltf', 2, 0, -47, 1.3, 0);*/
+      loadAnimatedModelFromBlenderWithRotation('./resources/animals/panda.gltf', 2, 0, -47, 1.3, 0);
 
 			function init() {
 
@@ -355,7 +355,7 @@ let myCam, myScene, myRenderer, stats;
         const muro5 = new CANNON.Body({ mass: 100 })
         muro5.addShape(fenceShape)
         const muroMesh5 = new THREE.Mesh(fenceGeometry, material)
-        muro5.position.set(, 6, )
+        muro5.position.set(50, 6, 0)
         muro5.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
         muro5.castShadow = true
         muro5.receiveShadow = true
@@ -367,7 +367,7 @@ let myCam, myScene, myRenderer, stats;
         const muro6 = new CANNON.Body({ mass: 100 })
         muro6.addShape(fenceShape)
         const muroMesh6 = new THREE.Mesh(fenceGeometry, material)
-        muro6.position.set(, 6, )
+        muro6.position.set(50, 6, 0)
         muro6.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
         muro6.castShadow = true
         muro6.receiveShadow = true
