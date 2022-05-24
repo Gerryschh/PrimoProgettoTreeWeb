@@ -1,11 +1,7 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js'
 
-import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/FBXLoader.js';
+
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
-import {OctahedronGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/src/geometries/OctahedronGeometry.js';
-import {MeshNormalMaterial} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/src/materials/MeshNormalMaterial.js';
-import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/OBJLoader.js';
-import {PointerLockControls} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/controls/PointerLockControls.js';
 import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/VRButton.js';
 import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRControllerModelFactory.js';
 import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRHandModelFactory.js';
@@ -25,7 +21,7 @@ let myCam, myScene, myRenderer, stats;
       var mouse = new THREE.Vector2();
       let material = new THREE.MeshPhongMaterial({
         color : 0xffffff,
-        opacity: 0,
+        opacity: 0.5,
         transparent: true,
       });
       let materialPalleGrosse = new THREE.MeshBasicMaterial();
@@ -56,7 +52,7 @@ let myCam, myScene, myRenderer, stats;
 			animate();
       loadPlane();
       loadWorkingZoneText('./resources/modelGLTF/WorkText.gltf', 90, 6, -36.6, 8.8);
-      loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
+      /*loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', -6.6, 1.1, -11.1, 0.11);
       loadAnimatedModelFromBlender('/resources/animals/farfallaAnimated.gltf', 8.8, 1.1, -55.5, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee1.gltf', 8.8, 1.1, -55.5, 0.11);
       loadAnimatedModelFromBlender('./resources/animals/bee3.gltf', 8.8, 1.1, -51.1, 0.11);
@@ -72,7 +68,7 @@ let myCam, myScene, myRenderer, stats;
       //WATER ZONE
       loadAnimatedModelFromBlenderWithRotation('./resources/animals/pantera.gltf', -78, 0, -9, 1.3, 1.7);
       //CINEMA ZONE
-      loadAnimatedModelFromBlenderWithRotation('./resources/animals/panda.gltf', 2, 0, -47, 1.3, 0);
+      loadAnimatedModelFromBlenderWithRotation('./resources/animals/panda.gltf', 2, 0, -47, 1.3, 0);*/
 
 			function init() {
 
@@ -215,7 +211,7 @@ let myCam, myScene, myRenderer, stats;
         });
         const cube = new THREE.Mesh( geometry2, material );
         cube.position.set(0,1,0);
-        myScene.add( cube );
+        /*myScene.add( cube );
         intersectMeshes.push(cube);
         
         document.addEventListener( 'mousedown', function( event ) {
@@ -234,7 +230,7 @@ let myCam, myScene, myRenderer, stats;
                  
              }
          
-         }, false );
+         }, false );*/
 
       }
       
@@ -268,11 +264,11 @@ let myCam, myScene, myRenderer, stats;
         world.addContactMaterial(physics_physics)
 
         // Create the user collision sphere
-        const radius = 2
-        sphereShape = new CANNON.Sphere(radius)
+        
+        sphereShape = new CANNON.Sphere(2)
         sphereBody = new CANNON.Body({ mass: 5, material: physicsMaterial })
         sphereBody.addShape(sphereShape)
-        sphereBody.position.set(0, 2, 0)
+        sphereBody.position.set(0, 6, 0)
         sphereBody.linearDamping = 0.9
         world.addBody(sphereBody)
 
@@ -283,35 +279,103 @@ let myCam, myScene, myRenderer, stats;
         groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
         world.addBody(groundBody)
 
-        // Add boxes both in cannon.js and three.js
-        const halfExtents = new CANNON.Vec3(11, 5, 0.5)
-        const boxShape = new CANNON.Box(halfExtents)
-        const boxGeometry = new THREE.BoxBufferGeometry(halfExtents.x *2 , halfExtents.y *2, halfExtents.z *2)
+        // Add fence shape 
+        const fence = new CANNON.Vec3(12, 4, 1)
+        const fenceShape = new CANNON.Box(fence)
+        const fenceGeometry = new THREE.BoxBufferGeometry(fence.x *2 , fence.y *2, fence.z *2)
+
+        // Hitbox to close the road
+        const cubeClose = new CANNON.Vec3(1.5, 3, 1.5)
+        const cubeShape = new CANNON.Box(cubeClose)
+        const cubeGeometry = new THREE.BoxBufferGeometry(cubeClose.x *2, cubeClose.y *2, cubeClose.z *2)
+        
 
         // Adding a hitboxes for fences WORKSITE
-        const muro1 = new CANNON.Body({ mass: 50 })
-        muro1.addShape(boxShape)
-        const muroMesh = new THREE.Mesh(boxGeometry, material)
-        muro1.position.set(20, 6, 3.6)
-        muro1.rotation = 32
-        muro1.castShadow = true;
-        muro1.receiveShadow = true;
+        const muro1 = new CANNON.Body({ mass: 100 })
+        muro1.addShape(fenceShape)
+        const muroMesh = new THREE.Mesh(fenceGeometry, material)
+        muro1.position.set(22, 6, 4.2)
+        muro1.castShadow = true
+        muro1.receiveShadow = true
         world.addBody(muro1)
         myScene.add(muroMesh)
         boxes.push(muro1)
         boxMeshes.push(muroMesh)
 
-        const muro2 = new CANNON.Body({ mass: 50 })
-        muro2.addShape(boxShape)
-        const muroMesh2 = new THREE.Mesh(boxGeometry, material)
-        muro2.position.set(20, 6, -4)
-        muro2.rotation = 32
-        muro2.castShadow = true;
-        muro2.receiveShadow = true;
+        const muro2 = new CANNON.Body({ mass: 100 })
+        muro2.addShape(fenceShape)
+        const muroMesh2 = new THREE.Mesh(fenceGeometry, material)
+        muro2.position.set(20, 6, -4.5)
+        muro2.castShadow = true
+        muro2.receiveShadow = true
         world.addBody(muro2)
         myScene.add(muroMesh2)
         boxes.push(muro2)
         boxMeshes.push(muroMesh2)
+
+
+        const muroChiuso = new CANNON.Body({ mass : 100 })
+        muroChiuso.addShape(cubeShape)
+        const muroChiusoMesh = new THREE.Mesh(cubeGeometry, material)
+        muroChiuso.position.set(30, 6, 0)
+        muroChiuso.castShadow = true
+        muroChiuso.receiveShadow = true
+        world.addBody(muroChiuso)
+        myScene.add(muroChiusoMesh)
+        boxes.push(muroChiuso)
+        boxMeshes.push(muroChiusoMesh)
+
+
+        // Adding a hitboxes for fences playground
+        const muro3 = new CANNON.Body({ mass: 100 })
+        muro3.addShape(fenceShape)
+        const muroMesh3 = new THREE.Mesh(fenceGeometry, material)
+        muro3.position.set(10.9, 6, 19)
+        muro3.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
+        muro3.castShadow = true
+        muro3.receiveShadow = true
+        world.addBody(muro3)
+        myScene.add(muroMesh3)
+        boxes.push(muro3)
+        boxMeshes.push(muroMesh3)
+
+        const muro4 = new CANNON.Body({ mass: 100 })
+        muro4.addShape(fenceShape)
+        const muroMesh4 = new THREE.Mesh(fenceGeometry, material)
+        muro4.position.set(3, 6, 21)
+        muro4.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
+        muro4.castShadow = true
+        muro4.receiveShadow = true
+        world.addBody(muro4)
+        myScene.add(muroMesh4)
+        boxes.push(muro4)
+        boxMeshes.push(muroMesh4)
+
+        // Adding a hitboxes for fences Waterzone
+        const muro5 = new CANNON.Body({ mass: 100 })
+        muro5.addShape(fenceShape)
+        const muroMesh5 = new THREE.Mesh(fenceGeometry, material)
+        muro5.position.set(, 6, )
+        muro5.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
+        muro5.castShadow = true
+        muro5.receiveShadow = true
+        world.addBody(muro5)
+        myScene.add(muroMesh5)
+        boxes.push(muro5)
+        boxMeshes.push(muroMesh5)
+
+        const muro6 = new CANNON.Body({ mass: 100 })
+        muro6.addShape(fenceShape)
+        const muroMesh6 = new THREE.Mesh(fenceGeometry, material)
+        muro6.position.set(, 6, )
+        muro6.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
+        muro6.castShadow = true
+        muro6.receiveShadow = true
+        world.addBody(muro6)
+        myScene.add(muroMesh6)
+        boxes.push(muro6)
+        boxMeshes.push(muroMesh6)
+
 
         
         // Adding invisible boxes
@@ -356,8 +420,10 @@ let myCam, myScene, myRenderer, stats;
         const boxShape2 = new CANNON.Box(halfExtents2)
         const boxGeometry2 = new THREE.BoxBufferGeometry(halfExtents2.x * 2, halfExtents2.y * 2, halfExtents2.z * 2)
 
+        
         let last
-        for (let i = 0; i < N; i++) {
+
+        /*for (let i = 0; i < N; i++) {
           // Make the fist one static to support the others
           const boxBody = new CANNON.Body({ mass: i === 0 ? 0 : mass })
           boxBody.addShape(boxShape2)
@@ -438,8 +504,9 @@ let myCam, myScene, myRenderer, stats;
           const z = sphereBody.position.z + shootDirection.z * (sphereShape.radius * 1.02 + ballShape.radius)
           ballBody.position.set(x, y, z)
           ballMesh.position.copy(ballBody.position)
-        })
-      }
+        })*/
+      } 
+      
 
       function initPointerLock() {
         controls = new PointerLockControlsCannon(myCam, sphereBody)
