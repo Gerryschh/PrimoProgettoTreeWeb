@@ -19,7 +19,7 @@ let myCam, myScene, myRenderer, stats;
       var mouse = new THREE.Vector2();
       let material = new THREE.MeshPhongMaterial({
         color : 0xffffff,
-        opacity: 0.5,
+        opacity: 0,
         transparent: true,
       });
       let materialPalleGrosse = new THREE.MeshBasicMaterial();
@@ -284,6 +284,30 @@ let myCam, myScene, myRenderer, stats;
         const fenceShape = new CANNON.Box(fence)
         const fenceGeometry = new THREE.BoxBufferGeometry(fence.x *2 , fence.y *2, fence.z *2)
 
+        // Add fence + bridge shape 
+        const fbridge = new CANNON.Vec3(27, 4, 1)
+        const fbridgeShape = new CANNON.Box(fbridge)
+        const fbridgeGeometry = new THREE.BoxBufferGeometry(fbridge.x *2 , fbridge.y *2, fbridge.z *2)
+
+        //Box for house
+        const casa = new CANNON.Vec3(5, 5, 5)
+        const casaShape = new CANNON.Box(casa)
+        const casaGeometry = new THREE.BoxBufferGeometry(casa.x *2 , casa.y *2, casa.z *2)
+
+        //Box for tree (waterzone)
+        const albero = new CANNON.Vec3(3, 3, 3)
+        const alberoShape = new CANNON.Box(albero)
+        const alberoGeometry = new THREE.BoxBufferGeometry(albero.x *2 , albero.y *2, albero.z *2)
+
+        // Add waterzone hitboxes
+        const muroWater = new CANNON.Vec3(7, 4, 1)
+        const muroWaterShape = new CANNON.Box(muroWater)
+        const muroWaterGeometry = new THREE.BoxBufferGeometry(muroWater.x *2 , muroWater.y *2, muroWater.z *2)
+
+        const muroWaterBig = new CANNON.Vec3(16, 4, 1)
+        const muroWaterShapeBig = new CANNON.Box(muroWaterBig)
+        const muroWaterGeometryBig = new THREE.BoxBufferGeometry(muroWaterBig.x *2 , muroWaterBig.y *2, muroWaterBig.z *2)
+
         // Hitbox to close the road
         const cubeClose = new CANNON.Vec3(1.5, 3, 1.5)
         const cubeShape = new CANNON.Box(cubeClose)
@@ -353,10 +377,10 @@ let myCam, myScene, myRenderer, stats;
 
         // Adding a hitboxes for fences Waterzone
         const muro5 = new CANNON.Body({ mass: 100 })
-        muro5.addShape(fenceShape)
-        const muroMesh5 = new THREE.Mesh(fenceGeometry, material)
-        muro5.position.set(50, 6, 0)
-        muro5.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
+        muro5.addShape(fbridgeShape)
+        const muroMesh5 = new THREE.Mesh(fbridgeGeometry, material)
+        muro5.position.set(-35, 6, -1)
+        muro5.quaternion.setFromEuler(0, -Math.PI / 0.97, 0)
         muro5.castShadow = true
         muro5.receiveShadow = true
         world.addBody(muro5)
@@ -365,16 +389,239 @@ let myCam, myScene, myRenderer, stats;
         boxMeshes.push(muroMesh5)
 
         const muro6 = new CANNON.Body({ mass: 100 })
-        muro6.addShape(fenceShape)
-        const muroMesh6 = new THREE.Mesh(fenceGeometry, material)
-        muro6.position.set(50, 6, 0)
-        muro6.quaternion.setFromEuler(0, -Math.PI / 2.5, 0)
+        muro6.addShape(fbridgeShape)
+        const muroMesh6 = new THREE.Mesh(fbridgeGeometry, material)
+        muro6.position.set(-35, 6, -8.2)
+        muro6.quaternion.setFromEuler(0, -Math.PI / 0.97, 0)
         muro6.castShadow = true
         muro6.receiveShadow = true
         world.addBody(muro6)
         myScene.add(muroMesh6)
         boxes.push(muro6)
         boxMeshes.push(muroMesh6)
+
+        // Adding a hitboxes for fence Cinema Zone 
+        const muro7 = new CANNON.Body({ mass: 100 }) 
+        muro7.addShape(fenceShape) 
+        const muroMesh7 = new THREE.Mesh(fenceGeometry, material) 
+        muro7.position.set(4, 6, -20) 
+        muro7.quaternion.setFromEuler(0, -Math.PI / 2, 0) 
+        muro7.castShadow = true 
+        muro7.receiveShadow = true 
+        world.addBody(muro7) 
+        myScene.add(muroMesh7) 
+        boxes.push(muro7) 
+        boxMeshes.push(muroMesh7) 
+ 
+        const muro8 = new CANNON.Body({ mass: 100 }) 
+        muro8.addShape(fenceShape) 
+        const muroMesh8 = new THREE.Mesh(fenceGeometry, material) 
+        muro8.position.set(-4.5, 6, -20) 
+        muro8.quaternion.setFromEuler(0, -Math.PI / 2, 0) 
+        muro8.castShadow = true 
+        muro8.receiveShadow = true 
+        world.addBody(muro8) 
+        myScene.add(muroMesh8) 
+        boxes.push(muro8) 
+        boxMeshes.push(muroMesh8) 
+ 
+        //Trasversal walls in cinema zone 
+        const cinema = new CANNON.Vec3(8, 4, 1) 
+        const cinemaShape = new CANNON.Box(cinema) 
+        const cinemaGeometry = new THREE.BoxBufferGeometry(cinema.x *2 , cinema.y *2, cinema.z *2) 
+ 
+        const muro9 = new CANNON.Body({ mass: 100 }) 
+        muro9.addShape(cinemaShape) 
+        const muroMesh9 = new THREE.Mesh(cinemaGeometry, material) 
+        muro9.position.set(5.9, 6, -40) 
+        muro9.quaternion.setFromEuler(0, -Math.PI / 1.8, 0) 
+        muro9.castShadow = true 
+        muro9.receiveShadow = true 
+        world.addBody(muro9) 
+        myScene.add(muroMesh9) 
+        boxes.push(muro9) 
+        boxMeshes.push(muroMesh9) 
+ 
+        const muro10 = new CANNON.Body({ mass: 100 }) 
+        muro10.addShape(cinemaShape) 
+        const muroMesh10 = new THREE.Mesh(cinemaGeometry, material) 
+        muro10.position.set(-5.9, 6, -40) 
+        muro10.quaternion.setFromEuler(0, -Math.PI / 2.4 , 0) 
+        muro10.castShadow = true 
+        muro10.receiveShadow = true 
+        world.addBody(muro10) 
+        myScene.add(muroMesh10) 
+        boxes.push(muro10) 
+        boxMeshes.push(muroMesh10) 
+ 
+ 
+        const cinema2 = new CANNON.Vec3(7.5, 4, 1) 
+        const cinemaShape2 = new CANNON.Box(cinema2) 
+        const cinemaGeometry2 = new THREE.BoxBufferGeometry(cinema2.x *2 , cinema2.y *2, cinema2.z *2) 
+ 
+        const muro11 = new CANNON.Body({ mass: 100 }) 
+        muro11.addShape(cinemaShape2) 
+        const muroMesh11 = new THREE.Mesh(cinemaGeometry2, material) 
+        muro11.position.set(0.3, 6, -50) 
+        muro11.castShadow = true 
+        muro11.receiveShadow = true 
+        world.addBody(muro11) 
+        myScene.add(muroMesh11) 
+        boxes.push(muro11) 
+        boxMeshes.push(muroMesh11) 
+ 
+         
+        //Trasversal walls in center zone 
+        const piazza = new CANNON.Vec3(2, 4, 0.3) 
+        const piazzaShape = new CANNON.Box(piazza) 
+        const piazzaGeometry = new THREE.BoxBufferGeometry(piazza.x *2 , piazza.y *2, piazza.z *2) 
+ 
+        const piazzatwo = new CANNON.Vec3(3, 4, 0.3) 
+        const piazzaShapetwo = new CANNON.Box(piazzatwo) 
+        const piazzaGeometrytwo = new THREE.BoxBufferGeometry(piazzatwo.x *2 , piazzatwo.y *2, piazzatwo.z *2) 
+ 
+        const piazza1 = new CANNON.Body({ mass: 100 }) 
+        piazza1.addShape(piazzaShape) 
+        const piazzaMesh1 = new THREE.Mesh(piazzaGeometry, material) 
+        piazza1.position.set(6, 6, -6) 
+        piazza1.quaternion.setFromEuler(0, Math.PI / 1.3 , 0) 
+        piazza1.castShadow = true 
+        piazza1.receiveShadow = true 
+        world.addBody(piazza1) 
+        myScene.add(piazzaMesh1) 
+        boxes.push(piazza1) 
+        boxMeshes.push(piazzaMesh1) 
+ 
+        const piazza2 = new CANNON.Body({ mass: 100 }) 
+        piazza2.addShape(piazzaShapetwo) 
+        const piazzaMesh2 = new THREE.Mesh(piazzaGeometrytwo, material) 
+        piazza2.position.set(7.6, 6, 5) 
+        piazza2.quaternion.setFromEuler(0, -Math.PI / 1.4 , 0) 
+        piazza2.castShadow = true 
+        piazza2.receiveShadow = true 
+        world.addBody(piazza2)
+        myScene.add(piazzaMesh2) 
+        boxes.push(piazza2) 
+        boxMeshes.push(piazzaMesh2)
+
+        const piazza3 = new CANNON.Body({ mass: 100 }) 
+        piazza3.addShape(piazzaShape) 
+        const piazzaMesh3 = new THREE.Mesh(piazzaGeometry, material) 
+        piazza3.position.set(-6, 6, -6) 
+        piazza3.quaternion.setFromEuler(0, -Math.PI / 1.4 , 0) 
+        piazza3.castShadow = true 
+        piazza3.receiveShadow = true 
+        world.addBody(piazza3)
+        myScene.add(piazzaMesh3) 
+        boxes.push(piazza3) 
+        boxMeshes.push(piazzaMesh3)
+
+        const piazzathree = new CANNON.Vec3(4.4, 4, 0.3) 
+        const piazzaShapethree = new CANNON.Box(piazzathree) 
+        const piazzaGeometrythree = new THREE.BoxBufferGeometry(piazzathree.x *2 , piazzathree.y *2, piazzathree.z *2) 
+
+        const piazza4 = new CANNON.Body({ mass: 100 }) 
+        piazza4.addShape(piazzaShapethree) 
+        const piazzaMesh4 = new THREE.Mesh(piazzaGeometrythree, material) 
+        piazza4.position.set(-5.4, 6, 6) 
+        piazza4.quaternion.setFromEuler(0, Math.PI / 1.3 , 0) 
+        piazza4.castShadow = true 
+        piazza4.receiveShadow = true 
+        world.addBody(piazza4)
+        myScene.add(piazzaMesh4) 
+        boxes.push(piazza4) 
+        boxMeshes.push(piazzaMesh4)
+
+        //Quadrato attorno WaterZone
+        const muro12 = new CANNON.Body({ mass: 100 })
+        muro12.addShape(muroWaterShape)
+        const muroMesh12 = new THREE.Mesh(muroWaterGeometry, material)
+        muro12.position.set(-64, 6, 3)
+        muro12.quaternion.setFromEuler(0, -Math.PI / 1.97, 0)
+        muro12.castShadow = true
+        muro12.receiveShadow = true
+        world.addBody(muro12)
+        myScene.add(muroMesh12)
+        boxes.push(muro12)
+        boxMeshes.push(muroMesh12)
+
+        const muro13 = new CANNON.Body({ mass: 100 })
+        muro13.addShape(muroWaterShapeBig)
+        const muroMesh13 = new THREE.Mesh(muroWaterGeometryBig, material)
+        muro13.position.set(-82, 6, 8.5)
+        muro13.quaternion.setFromEuler(0, -Math.PI / 1, 0)
+        muro13.castShadow = true
+        muro13.receiveShadow = true
+        world.addBody(muro13)
+        myScene.add(muroMesh13)
+        boxes.push(muro13)
+        boxMeshes.push(muroMesh13)
+
+        const muro14 = new CANNON.Body({ mass: 100 })
+        muro14.addShape(muroWaterShapeBig)
+        const muroMesh14 = new THREE.Mesh(muroWaterGeometryBig, material)
+        muro14.position.set(-82, 6, -26)
+        muro14.quaternion.setFromEuler(0, -Math.PI / 1, 0)
+        muro14.castShadow = true
+        muro14.receiveShadow = true
+        world.addBody(muro14)
+        myScene.add(muroMesh14)
+        boxes.push(muro14)
+        boxMeshes.push(muroMesh14)
+
+        const muro15 = new CANNON.Body({ mass: 100 })
+        muro15.addShape(muroWaterShape)
+        const muroMesh15 = new THREE.Mesh(muroWaterGeometry, material)
+        muro15.position.set(-64, 6, -18)
+        muro15.quaternion.setFromEuler(0, -Math.PI / 1.97, 0)
+        muro15.castShadow = true
+        muro15.receiveShadow = true
+        world.addBody(muro15)
+        myScene.add(muroMesh15)
+        boxes.push(muro15)
+        boxMeshes.push(muroMesh15)
+
+        const muro16 = new CANNON.Body({ mass: 100 })
+        muro16.addShape(muroWaterShapeBig)
+        const muroMesh16 = new THREE.Mesh(muroWaterGeometryBig, material)
+        muro16.position.set(-100, 6, -9)
+        muro16.quaternion.setFromEuler(0, -Math.PI / 1.97, 0)
+        muro16.castShadow = true
+        muro16.receiveShadow = true
+        world.addBody(muro16)
+        myScene.add(muroMesh16)
+        boxes.push(muro16)
+        boxMeshes.push(muroMesh16)
+
+        //Hitbox casa Waterzone
+        const muro17 = new CANNON.Body({ mass: 100 })
+        muro17.addShape(casaShape)
+        const muroMesh17 = new THREE.Mesh(casaGeometry, material)
+        muro17.position.set(-84, 6, -8)
+        muro17.quaternion.setFromEuler(0, -Math.PI / 1.97, 0)
+        muro17.castShadow = true
+        muro17.receiveShadow = true
+        world.addBody(muro17)
+        myScene.add(muroMesh17)
+        boxes.push(muro17)
+        boxMeshes.push(muroMesh17)
+
+        //Hitbox casa Waterzone
+        const muro18 = new CANNON.Body({ mass: 100 })
+        muro18.addShape(alberoShape)
+        const muroMesh18 = new THREE.Mesh(alberoGeometry, material)
+        muro18.position.set(-94, 6, -15)
+        muro18.quaternion.setFromEuler(0, -Math.PI / 1.97, 0)
+        muro18.castShadow = true
+        muro18.receiveShadow = true
+        world.addBody(muro18)
+        myScene.add(muroMesh18)
+        boxes.push(muro18)
+        boxMeshes.push(muroMesh18)
+
+
+
+
 
 
         
@@ -459,7 +706,7 @@ let myCam, myScene, myRenderer, stats;
           }
 
           last = boxBody
-        }
+        }*/
 
         // The shooting balls
         const shootVelocity = 15
@@ -504,7 +751,7 @@ let myCam, myScene, myRenderer, stats;
           const z = sphereBody.position.z + shootDirection.z * (sphereShape.radius * 1.02 + ballShape.radius)
           ballBody.position.set(x, y, z)
           ballMesh.position.copy(ballBody.position)
-        })*/
+        })
       } 
       
 
