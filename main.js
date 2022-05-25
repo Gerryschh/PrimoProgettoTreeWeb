@@ -26,7 +26,11 @@ let myCam, myScene, myRenderer, stats;
       let hand1, hand2;
       let controller1, controller2;
       let controllerGrip1, controllerGrip2;
-			let intersectMeshes = [];
+			let intersectsPanda = [];
+      let intersectsBear = [];
+      let intersectsZebra = [];
+      let intersectsTiger = [];
+      let intersectsPantera = [];
       let mixers = [];
       let NPCOctahedronMesh1, NPCOctahedronMesh2, NPCOctahedronMesh3, NPCOctahedronMesh4, NPCOctahedronMesh5;
 
@@ -123,7 +127,6 @@ let myCam, myScene, myRenderer, stats;
         const mesh = new THREE.Mesh( cubo, videoMaterial);
         mesh.position.set(0, 30, -190);
         myScene.add(mesh);
-        intersectMeshes.push(mesh);
 
         //Loading lights
         const ambientLight = new THREE.AmbientLight( 0xffffff, 1 );
@@ -203,16 +206,41 @@ let myCam, myScene, myRenderer, stats;
         myScene.background = texture;
 
         //Interactions
+        //Bear Interactions
         const geometry2 = new THREE.BoxGeometry( 1, 2.5, 1 );
         const material = new THREE.MeshPhongMaterial({
           color : 0xffffff,
           opacity: 0,
           transparent: true,
         });
-        const cube = new THREE.Mesh( geometry2, material );
-        cube.position.set(-0.66, 1, 8.5);
-        myScene.add( cube );
-        intersectMeshes.push(cube);
+        const cubeBear = new THREE.Mesh( geometry2, material );
+        cubeBear.position.set(-0.66, 1, 8.5);
+        myScene.add( cubeBear );
+        intersectsBear.push(cubeBear);
+
+        //Panda Interactions
+        const cubePanda = new THREE.Mesh( geometry2, material );
+        cubePanda.position.set(2, 1, -47);
+        myScene.add( cubePanda );
+        intersectsPanda.push(cubePanda);
+
+        //Zebra Interactions
+        const cubeZebra = new THREE.Mesh( geometry2, material );
+        cubeZebra.position.set(8.7, 1, 30);
+        myScene.add( cubeZebra );
+        intersectsZebra.push(cubeZebra);
+
+        //Tiger Interactions
+        const cubeTiger = new THREE.Mesh( geometry2, material );
+        cubeTiger.position.set(31, 1, 0);
+        myScene.add( cubeTiger );
+        intersectsTiger.push(cubeTiger);
+
+        //Pantera Interactions
+        const cubePantera = new THREE.Mesh( geometry2, material );
+        cubePantera.position.set(-78, 1, -9);
+        myScene.add( cubePantera );
+        intersectsPantera.push(cubePantera);
         
         document.addEventListener( 'mousedown', function( event ) {
     
@@ -222,26 +250,81 @@ let myCam, myScene, myRenderer, stats;
            
            myRay.setFromCamera( mouse, myCam );
             
-             var intersects = myRay.intersectObjects( intersectMeshes );
+             var bear = myRay.intersectObjects( intersectsBear );
+             var panda = myRay.intersectObjects( intersectsPanda );
+             var zebra = myRay.intersectObjects( intersectsZebra );
+             var tiger = myRay.intersectObjects( intersectsTiger );
+             var pantera = myRay.intersectObjects( intersectsPantera );
          
-             if ( intersects.length > 0 ) {
-                 if(intersects[0])
-                 {
-                    controls.unlock();
-                    var popup = document.getElementById("popup1");
-                    popup.style.display = "flex";
-                    popup.style.visibility = "visible";
-                    var bottoneChiudi = document.getElementById("bottoneChiudi");
+             if ( bear.length > 0 ) {
+                 controls.unlock();
+                 var popupBear = document.getElementById("popup1Bear");
+                 popupBear.style.display = "flex";
+                 popupBear.style.visibility = "visible";
+                 var bottoneChiudiBear = document.getElementById("bottoneChiudiBear");
 
-                    bottoneChiudi.onclick = function() {
-                    var popup1 = document.getElementById("popup1");
-                    popup1.style.display = "none";
-                    popup1.style.visibility = "hidden";
-                    controls.lock();
-                  }
-                   
-                 }                
-             }
+                 bottoneChiudiBear.onclick = function() {
+                 popupBear.style.display = "none";
+                 popupBear.style.visibility = "hidden";
+                 controls.lock();
+               }          
+            }
+            if ( panda.length > 0 )
+            {
+                controls.unlock();
+                var popupPanda = document.getElementById("popup1Panda");
+                 popupPanda.style.display = "flex";
+                 popupPanda.style.visibility = "visible";
+                 var bottoneChiudiPanda = document.getElementById("bottoneChiudiPanda");
+
+                 bottoneChiudiPanda.onclick = function() {
+                 popupPanda.style.display = "none";
+                 popupPanda.style.visibility = "hidden";
+                 controls.lock();
+               } 
+            }
+            if ( zebra.length > 0 )
+            {
+              controls.unlock();
+                var popupZebra = document.getElementById("popup1Zebra");
+                 popupZebra.style.display = "flex";
+                 popupZebra.style.visibility = "visible";
+                 var bottoneChiudiZebra = document.getElementById("bottoneChiudiZebra");
+
+                 bottoneChiudiZebra.onclick = function() {
+                 popupZebra.style.display = "none";
+                 popupZebra.style.visibility = "hidden";
+                 controls.lock();
+               } 
+            }
+            if ( tiger.length > 0 )
+            {
+              controls.unlock();
+                var popupTiger = document.getElementById("popup1Tiger");
+                 popupTiger.style.display = "flex";
+                 popupTiger.style.visibility = "visible";
+                 var bottoneChiudiTiger = document.getElementById("bottoneChiudiTiger");
+
+                 bottoneChiudiTiger.onclick = function() {
+                 popupTiger.style.display = "none";
+                 popupTiger.style.visibility = "hidden";
+                 controls.lock();
+               } 
+            }
+            if ( pantera.length > 0 )
+            {
+              controls.unlock();
+                var popupPantera = document.getElementById("popup1Pantera");
+                 popupPantera.style.display = "flex";
+                 popupPantera.style.visibility = "visible";
+                 var bottoneChiudiPantera = document.getElementById("bottoneChiudiPantera");
+
+                 bottoneChiudiPantera.onclick = function() {
+                 popupPantera.style.display = "none";
+                 popupPantera.style.visibility = "hidden";
+                 controls.lock();
+               } 
+            }
          
          }, false );
 
