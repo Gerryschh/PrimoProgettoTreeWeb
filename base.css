@@ -58,7 +58,7 @@ top:0;
   background: rgba(0, 0, 0, .5)
 }
 
-#popup1 {
+#popup1Bear, #popup1Panda, #popup1Zebra, #popup1Tiger, #popup1Pantera {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -97,10 +97,10 @@ a{
   color: rgb(36, 125, 39);
   transition: all linear .3s;
 }
-#bottoneChiudi {
+.bottoneChiudi {
   color: #000000;
 }
-#bottoneChiudi:hover {
+.bottoneChiudi:hover {
   color: #ffffff;
   position: relative;
   cursor: pointer;
