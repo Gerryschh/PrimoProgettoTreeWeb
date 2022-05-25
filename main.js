@@ -203,15 +203,15 @@ let myCam, myScene, myRenderer, stats;
         myScene.background = texture;
 
         //Interactions
-        const geometry2 = new THREE.BoxGeometry( 1, 1, 1 );
+        const geometry2 = new THREE.BoxGeometry( 1, 2.5, 1 );
         const material = new THREE.MeshPhongMaterial({
           color : 0xffffff,
           opacity: 0,
           transparent: true,
         });
         const cube = new THREE.Mesh( geometry2, material );
-        cube.position.set(0,1,0);
-        /*myScene.add( cube );
+        cube.position.set(-0.66, 1, 8.5);
+        myScene.add( cube );
         intersectMeshes.push(cube);
         
         document.addEventListener( 'mousedown', function( event ) {
@@ -225,12 +225,25 @@ let myCam, myScene, myRenderer, stats;
              var intersects = myRay.intersectObjects( intersectMeshes );
          
              if ( intersects.length > 0 ) {
-                 
-                 alert("hit");
-                 
+                 if(intersects[0])
+                 {
+                    controls.unlock();
+                    var popup = document.getElementById("popup1");
+                    popup.style.display = "flex";
+                    popup.style.visibility = "visible";
+                    var bottoneChiudi = document.getElementById("bottoneChiudi");
+
+                    bottoneChiudi.onclick = function() {
+                    var popup1 = document.getElementById("popup1");
+                    popup1.style.display = "none";
+                    popup1.style.visibility = "hidden";
+                    controls.lock();
+                  }
+                   
+                 }                
              }
          
-         }, false );*/
+         }, false );
 
       }
       
@@ -277,6 +290,7 @@ let myCam, myScene, myRenderer, stats;
         const groundBody = new CANNON.Body({ mass: 0, material: physicsMaterial })
         groundBody.addShape(groundShape)
         groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
+        groundBody.position.set(0, -0.01, 0)
         world.addBody(groundBody)
 
         // Add fence shape 
