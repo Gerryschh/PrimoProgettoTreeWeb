@@ -22,7 +22,35 @@ let myCam, myScene, myRenderer, stats;
         opacity: 0,
         transparent: true,
       });
-      let materialPalleGrosse = new THREE.MeshBasicMaterial();
+
+      let materialBlu = new THREE.MeshPhongMaterial({
+        color: 0x0000ff,
+        opacity: 0.7,
+        transparent: true,
+
+      })
+
+      let materialRosso = new THREE.MeshPhongMaterial({
+        color: 0xff0000,
+        opacity: 0.7,
+        transparent: true,
+
+      })
+
+      let materialVerde = new THREE.MeshPhongMaterial({
+        color: 0x008000,
+        opacity: 0.7,
+        transparent: true,
+
+      })
+
+
+      let materialPalleGrosse = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        opacity: 0.8,
+        transparent: true,
+      })
+
       let hand1, hand2;
       let controller1, controller2;
       let controllerGrip1, controllerGrip2;
@@ -633,23 +661,64 @@ let myCam, myScene, myRenderer, stats;
         boxes.push(muro18)
         boxMeshes.push(muroMesh18)
 
+        //LETS PLAY 
+        const cuboBlu = new CANNON.Vec3(1, 1, 1) 
+        const cuboBluShape = new CANNON.Box(cuboBlu) 
+        const cuboBluGeometry = new THREE.BoxBufferGeometry(cuboBlu.x *2 , cuboBlu.y *2, cuboBlu.z *2) 
+
+        for (let i = 0; i < 10; i++) {
+        
+        const gioco1 = new CANNON.Body({ mass: 1 })
+        gioco1.addShape(cuboBluShape)
+        const gioco1Mesh = new THREE.Mesh(cuboBluGeometry, materialBlu)
+
+        const x = randomIntFromInterval(5, 10)
+        const y = 6
+        const z = randomIntFromInterval(40, 60)
+
+        gioco1.position.set(x, y, z)
+        muro18.quaternion.setFromEuler(0, -Math.PI / 1.97, 0)
+        gioco1.castShadow = true
+        gioco1.receiveShadow = true
+        world.addBody(gioco1)
+        myScene.add(gioco1Mesh)
+        boxes.push(gioco1)
+        boxMeshes.push(gioco1Mesh)
+
+        }
+
+        const sferaRossaShape = new CANNON.Sphere()
+        const sferaRossaGeometry = new THREE.SphereBufferGeometry(1)
+
+        for (let i = 0; i < 10; i++) {
+
+        const sferaRossa = new CANNON.Body({ mass: 3})
+        sferaRossa.addShape(sferaRossaShape)
+        const sferaRossaMesh = new THREE.Mesh(sferaRossaGeometry, materialRosso)
+
+        const x = randomIntFromInterval(15, 25)
+        const y = 6
+        const z = randomIntFromInterval(40, 60)
+
+        sferaRossa.position.set(x, y, z)
+        sferaRossa.castShadow = true
+        sferaRossa.receiveShadow = true
+        world.addBody(sferaRossa)
+        myScene.add(sferaRossaMesh)
+        boxes.push(sferaRossa)
+        boxMeshes.push(sferaRossaMesh)
+
+        }
+
+        
+
+
 
 
 
 
 
         
-        // Adding invisible boxes
-        /*const muro = new CANNON.Body({ mass: 50 })
-        muro.addShape(boxShape)
-        const muroMesh = new THREE.Mesh(boxGeometry, material)
-        muro.position.set(2, 0, 3)
-        muro.castShadow = true;
-        muro.receiveShadow = true;
-        world.addBody(muro)
-        myScene.add(muroMesh)
-        boxes.push(muro)
-        boxMeshes.push(muroMesh)*/
 
         /*for (let i = 0; i < 3; i++) {
           const boxBody = new CANNON.Body({ mass: 5 })
@@ -684,12 +753,12 @@ let myCam, myScene, myRenderer, stats;
         
         let last
 
-        /*for (let i = 0; i < N; i++) {
+        for (let i = 0; i < N; i++) {
           // Make the fist one static to support the others
           const boxBody = new CANNON.Body({ mass: i === 0 ? 0 : mass })
           boxBody.addShape(boxShape2)
-          const boxMesh = new THREE.Mesh(boxGeometry2, material)
-          boxBody.position.set(60,10,20)
+          const boxMesh = new THREE.Mesh(boxGeometry2, materialVerde)
+          boxBody.position.set(15 , 6, 50)
           boxBody.linearDamping = 0.01
           boxBody.angularDamping = 0.01
 
@@ -720,7 +789,7 @@ let myCam, myScene, myRenderer, stats;
           }
 
           last = boxBody
-        }*/
+        }
 
         // The shooting balls
         const shootVelocity = 15
@@ -869,7 +938,9 @@ let myCam, myScene, myRenderer, stats;
         });
       }
 
-      
+      function randomIntFromInterval(min, max) { 
+        return Math.floor(Math.random() * (max - min + 1) + min)
+      }
 
 			function onWindowResize() {
 
