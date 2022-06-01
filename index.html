@@ -48,6 +48,8 @@
     var sfondo = document.getElementById("sfondo");
     sfondo.style.display = "none";
     sfondo.style.visibility = "hidden";
+    const audio = document.getElementById("audio");
+    audio.play();
     }
   </script>
 
@@ -120,6 +122,10 @@
     <source src="resources/videos/video3.mp4">
   </video>
 
+  <audio controls id="audio" loop crossorigin="anonymous" style="display:none">
+  <source src="resources\music\Mountain Audio - Spring Morning Forest Ambience.mp3">
+  </audio>
+
   <div class="keys">
     <div class="key" data-key="80"><kbd>P</kbd></div>
     <div class="key" data-key="79"><kbd>O</kbd></div>
@@ -130,13 +136,16 @@
     window.addEventListener('keydown', function(e){
         var key=e.keyCode;
         const video = document.getElementById("video");
+        const audio = document.getElementById("audio");
         if (e.shiftKey && e.keyCode == "80")
         {
           video.play();
+          audio.pause();
         }
         else if(e.shiftKey && e.keyCode == "79")
         {
           video.pause();
+          audio.play();
         }
     });
 </script>
