@@ -94,6 +94,7 @@ nav{
   padding-right: 15px;
   top: 50%;
   left: 50%;
+  padding-bottom: 20px;
   -webkit-transform: translate(-50%, -50%);
   font: normal 1.2em Offside;
   background-color: #00000080;
@@ -140,6 +141,7 @@ ul{
   list-style-type: none;
   padding: 0;
   margin: 0;
+  display: flex;
 }
 li{
   width: 100%;
@@ -147,7 +149,7 @@ li{
   line-height: 2.5em;
   float: left;
 }
-li:first-child{
+li{
   line-height: 60px;
   font-size: 1.5em;
   text-shadow: rgb(187, 187, 187) 0px 1px 0px,
@@ -155,9 +157,10 @@ li:first-child{
   rgba(0, 0, 0, 0.199219) 0px 3px 1px,
   rgba(0, 0, 0, 0.296875) 0px 4px 3px;
 }
-li:first-child a:hover{
+li, a:hover{
   -webkit-animation: anim infinite 1.5s;
 }
+
 @-webkit-keyframes anim{
   0%{-webkit-transform: rotate(4deg);}
   50%{-webkit-transform: rotate(-4deg);}
