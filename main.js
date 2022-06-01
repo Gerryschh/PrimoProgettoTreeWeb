@@ -1,8 +1,8 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js'
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
-import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/VRButton.js';
-import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRControllerModelFactory.js';
-import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRHandModelFactory.js';
+// import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/VRButton.js';
+// import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRControllerModelFactory.js';
+// import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRHandModelFactory.js';
 
 import * as CANNON from '/dist/cannon-es.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
@@ -164,61 +164,61 @@ let myCam, myScene, myRenderer, stats;
         pointLight.position.set( 0, 120, 0 );
         myScene.add(pointLight);
 
-        //Setupping VR
-        document.body.appendChild( VRButton.createButton( myRenderer ) );
-        myRenderer.xr.enabled = true;
-        myRenderer.xr.setReferenceSpaceType( 'local-floor' );
+        // //Setupping VR
+        // document.body.appendChild( VRButton.createButton( myRenderer ) );
+        // myRenderer.xr.enabled = true;
+        // myRenderer.xr.setReferenceSpaceType( 'local-floor' );
 
-        const cameraGroup = new THREE.Group();
-        cameraGroup.position.y = 0;  // Set the initial VR Headset Position.
+        // const cameraGroup = new THREE.Group();
+        // cameraGroup.position.y = 0;  // Set the initial VR Headset Position.
         
-        //When user turn on the VR mode.
-        myRenderer.xr.addEventListener('sessionstart', function () {
-            myScene.add(cameraGroup);
-            cameraGroup.add(myCam);
-        });
-        //When user turn off the VR mode.
-        myRenderer.xr.addEventListener('sessionend', function () {
-          myScene.remove(cameraGroup);
-          cameraGroup.remove(myCam);
-        });
+        // //When user turn on the VR mode.
+        // myRenderer.xr.addEventListener('sessionstart', function () {
+        //     myScene.add(cameraGroup);
+        //     cameraGroup.add(myCam);
+        // });
+        // //When user turn off the VR mode.
+        // myRenderer.xr.addEventListener('sessionend', function () {
+        //   myScene.remove(cameraGroup);
+        //   cameraGroup.remove(myCam);
+        // });
 
-        controller1 = myRenderer.xr.getController( 0 );
-				myScene.add( controller1 );
+        // controller1 = myRenderer.xr.getController( 0 );
+				// myScene.add( controller1 );
 
-				controller2 = myRenderer.xr.getController( 1 );
-				myScene.add( controller2 );
+				// controller2 = myRenderer.xr.getController( 1 );
+				// myScene.add( controller2 );
 
-				const controllerModelFactory = new XRControllerModelFactory();
-				const handModelFactory = new XRHandModelFactory();
+				// const controllerModelFactory = new XRControllerModelFactory();
+				// const handModelFactory = new XRHandModelFactory();
 
-				// Hand 1
-				controllerGrip1 = myRenderer.xr.getControllerGrip( 0 );
-				controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
-				myScene.add( controllerGrip1 );
+				// // Hand 1
+				// controllerGrip1 = myRenderer.xr.getControllerGrip( 0 );
+				// controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
+				// myScene.add( controllerGrip1 );
 
-				hand1 = myRenderer.xr.getHand( 0 );
-				hand1.add( handModelFactory.createHandModel( hand1 ) );
+				// hand1 = myRenderer.xr.getHand( 0 );
+				// hand1.add( handModelFactory.createHandModel( hand1 ) );
 
-				myScene.add( hand1 );
+				// myScene.add( hand1 );
 
-				// Hand 2
-				controllerGrip2 = myRenderer.xr.getControllerGrip( 1 );
-				controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
-				myScene.add( controllerGrip2 );
+				// // Hand 2
+				// controllerGrip2 = myRenderer.xr.getControllerGrip( 1 );
+				// controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
+				// myScene.add( controllerGrip2 );
 
-				hand2 = myRenderer.xr.getHand( 1 );
-				hand2.add( handModelFactory.createHandModel( hand2 ) );
-				myScene.add( hand2 );
+				// hand2 = myRenderer.xr.getHand( 1 );
+				// hand2.add( handModelFactory.createHandModel( hand2 ) );
+				// myScene.add( hand2 );
 
-				const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+				// const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
 
-				const line = new THREE.Line( geometry );
-				line.name = 'line';
-				line.scale.z = 5;
+				// const line = new THREE.Line( geometry );
+				// line.name = 'line';
+				// line.scale.z = 5;
 
-				controller1.add( line.clone() );
-				controller2.add( line.clone() );
+				// controller1.add( line.clone() );
+				// controller2.add( line.clone() );
         
         //Loading skybox
         const loader = new THREE.CubeTextureLoader();
@@ -295,7 +295,13 @@ let myCam, myScene, myRenderer, stats;
                  popupBear.style.display = "none";
                  popupBear.style.visibility = "hidden";
                  controls.lock();
-               }          
+               }
+               if(event.keyCode === 13)
+               {  
+                popupBear.style.display = "none";
+                popupBear.style.visibility = "hidden";
+                controls.lock();
+               }
             }
             if ( panda.length > 0 )
             {
@@ -310,6 +316,12 @@ let myCam, myScene, myRenderer, stats;
                  popupPanda.style.visibility = "hidden";
                  controls.lock();
                } 
+               if(event.keyCode === 13)
+               {  
+                popupPanda.style.display = "none";
+                popupPanda.style.visibility = "hidden";
+                controls.lock();
+               }
             }
             if ( zebra.length > 0 )
             {
@@ -324,6 +336,12 @@ let myCam, myScene, myRenderer, stats;
                  popupZebra.style.visibility = "hidden";
                  controls.lock();
                } 
+               if(event.keyCode === 13)
+               {  
+                popupZebra.style.display = "none";
+                popupZebra.style.visibility = "hidden";
+                controls.lock();
+               }
             }
             if ( tiger.length > 0 )
             {
@@ -338,6 +356,12 @@ let myCam, myScene, myRenderer, stats;
                  popupTiger.style.visibility = "hidden";
                  controls.lock();
                } 
+               if(event.keyCode === 13)
+               {  
+                popupTiger.style.display = "none";
+                popupTiger.style.visibility = "hidden";
+                controls.lock();
+               }
             }
             if ( pantera.length > 0 )
             {
@@ -352,8 +376,14 @@ let myCam, myScene, myRenderer, stats;
                  popupPantera.style.visibility = "hidden";
                  controls.lock();
                } 
+               if(event.keyCode === 13)
+               {  
+                popupPantera.style.display = "none";
+                popupPantera.style.visibility = "hidden";
+                controls.lock();
+               }
             }
-         
+            
          }, false );
 
       }
@@ -1069,6 +1099,7 @@ let myCam, myScene, myRenderer, stats;
           mixers.map (m => m.update(dt));
         };      
 				myRenderer.render( myScene, myCam );
-        myRenderer.setAnimationLoop(animate);
+        requestAnimationFrame(animate);
+        //myRenderer.setAnimationLoop(animate);
 
 			}
