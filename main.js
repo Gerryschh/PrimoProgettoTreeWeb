@@ -269,8 +269,15 @@ let myCam, myScene, myRenderer, stats;
         cubePantera.position.set(-78, 1, -9);
         myScene.add( cubePantera );
         intersectsPantera.push(cubePantera);
+
+        //POPUPS
+        var popupBear = document.getElementById("popup1Bear");
+        var popupPanda = document.getElementById("popup1Panda");
+        var popupZebra = document.getElementById("popup1Zebra");
+        var popupTiger = document.getElementById("popup1Tiger");
+        var popupPantera = document.getElementById("popup1Pantera");
         
-        document.addEventListener( 'mousedown', function( event ) {
+        document.addEventListener( 'click', function( event ) {
     
           var rect = myRenderer.domElement.getBoundingClientRect();
          mouse.x = ( ( event.clientX - rect.left ) / ( rect.width - rect.left ) ) * 2 - 1;
@@ -286,106 +293,82 @@ let myCam, myScene, myRenderer, stats;
          
              if ( bear.length > 0 ) {
                  controls.unlock();
-                 var popupBear = document.getElementById("popup1Bear");
                  popupBear.style.display = "flex";
                  popupBear.style.visibility = "visible";
-                 var bottoneChiudiBear = document.getElementById("bottoneChiudiBear");
 
-                 bottoneChiudiBear.onclick = function() {
+                 document.body.onclick = function(event) {
+                
                  popupBear.style.display = "none";
                  popupBear.style.visibility = "hidden";
                  controls.lock();
-               }
-               if(event.keyCode === 13)
-               {  
-                popupBear.style.display = "none";
-                popupBear.style.visibility = "hidden";
-                controls.lock();
                }
             }
             if ( panda.length > 0 )
             {
                 controls.unlock();
-                var popupPanda = document.getElementById("popup1Panda");
                  popupPanda.style.display = "flex";
                  popupPanda.style.visibility = "visible";
-                 var bottoneChiudiPanda = document.getElementById("bottoneChiudiPanda");
 
-                 bottoneChiudiPanda.onclick = function() {
+                 document.body.onclick = function() {
                  popupPanda.style.display = "none";
                  popupPanda.style.visibility = "hidden";
                  controls.lock();
                } 
-               if(event.keyCode === 13)
-               {  
-                popupPanda.style.display = "none";
-                popupPanda.style.visibility = "hidden";
-                controls.lock();
-               }
             }
             if ( zebra.length > 0 )
             {
               controls.unlock();
-                var popupZebra = document.getElementById("popup1Zebra");
                  popupZebra.style.display = "flex";
                  popupZebra.style.visibility = "visible";
-                 var bottoneChiudiZebra = document.getElementById("bottoneChiudiZebra");
 
-                 bottoneChiudiZebra.onclick = function() {
+                 document.body.onclick = function() {
                  popupZebra.style.display = "none";
                  popupZebra.style.visibility = "hidden";
                  controls.lock();
                } 
-               if(event.keyCode === 13)
-               {  
-                popupZebra.style.display = "none";
-                popupZebra.style.visibility = "hidden";
-                controls.lock();
-               }
             }
             if ( tiger.length > 0 )
             {
               controls.unlock();
-                var popupTiger = document.getElementById("popup1Tiger");
                  popupTiger.style.display = "flex";
                  popupTiger.style.visibility = "visible";
-                 var bottoneChiudiTiger = document.getElementById("bottoneChiudiTiger");
 
-                 bottoneChiudiTiger.onclick = function() {
+                 document.body.onclick = function() {
                  popupTiger.style.display = "none";
                  popupTiger.style.visibility = "hidden";
                  controls.lock();
                } 
-               if(event.keyCode === 13)
-               {  
-                popupTiger.style.display = "none";
-                popupTiger.style.visibility = "hidden";
-                controls.lock();
-               }
             }
             if ( pantera.length > 0 )
             {
               controls.unlock();
-                var popupPantera = document.getElementById("popup1Pantera");
                  popupPantera.style.display = "flex";
                  popupPantera.style.visibility = "visible";
-                 var bottoneChiudiPantera = document.getElementById("bottoneChiudiPantera");
 
-                 bottoneChiudiPantera.onclick = function() {
+                 document.body.onclick = function() {
                  popupPantera.style.display = "none";
                  popupPantera.style.visibility = "hidden";
                  controls.lock();
                } 
-               if(event.keyCode === 13)
-               {  
-                popupPantera.style.display = "none";
-                popupPantera.style.visibility = "hidden";
-                controls.lock();
-               }
-            }
-            
+            } 
          }, false );
 
+         document.addEventListener("keypress", function (event) {
+           if(event.key === "Enter")
+           {
+            popupBear.style.display = "none";
+            popupBear.style.visibility = "hidden";
+            popupPanda.style.display = "none";
+            popupPanda.style.visibility = "hidden";
+            popupZebra.style.display = "none";
+            popupZebra.style.visibility = "hidden";
+            popupTiger.style.display = "none";
+            popupTiger.style.visibility = "hidden";
+            popupPantera.style.display = "none";
+            popupPantera.style.visibility = "hidden";
+            controls.lock();
+           }
+         })
       }
       
       function initCannon() {
