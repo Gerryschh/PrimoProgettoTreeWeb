@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js'
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js'
 // import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/VRButton.js';
 // import {XRControllerModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRControllerModelFactory.js';
 // import {XRHandModelFactory} from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/webxr/XRHandModelFactory.js';
@@ -15,7 +15,6 @@ import { PointerLockControlsCannon } from '/js/PointerLockControlsCannon.js';
 
 let myCam, myScene, myRenderer, stats;
 
-      var myRay = new THREE.Raycaster();
       var mouse = new THREE.Vector2();
       let material = new THREE.MeshPhongMaterial({
         color : 0xffffff,
@@ -122,8 +121,8 @@ let myCam, myScene, myRenderer, stats;
 				document.body.appendChild( myRenderer.domElement );
 
         // Stats.js
-        stats = new Stats();
-        document.body.appendChild(stats.dom);
+        // stats = new Stats();
+        // document.body.appendChild(stats.dom);
 
         //On Window Resize
 				window.addEventListener( 'resize', onWindowResize );
@@ -276,6 +275,108 @@ let myCam, myScene, myRenderer, stats;
         var popupZebra = document.getElementById("popup1Zebra");
         var popupTiger = document.getElementById("popup1Tiger");
         var popupPantera = document.getElementById("popup1Pantera");
+
+        //FONT
+        let text, lineText
+
+          const loader2 = new THREE.FontLoader();
+          loader2.load( './resources/fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+          const color = 0x000000;
+
+          const matDark = new THREE.LineBasicMaterial( {
+              color: color,
+              side: THREE.DoubleSide
+          } );
+
+          const matLite = new THREE.MeshBasicMaterial( {
+              color: color,
+              transparent: true,
+              opacity: 0.8,
+              side: THREE.DoubleSide
+          } );
+
+          const message = ' Benvenut* in Treeweb! Qui potrai scoprire il nostro mondo\nfatto di immaginazione e creativity.\nPasseggiando tra i viali, potrai incontrare nuovi personaggi\n che ti accompagnerannoalla scoperta dell’universo \ndigitale di cui, ogni giorno, ci occupiamo.\nVisita il playground e l’area cinema e \nguarda le nostre idee crescere e prendere forma.\nVivi un’esperienza all’insegna della creaTREEvity!';
+
+          const shapes = font.generateShapes( message, 0.1 );
+
+          const geometry = new THREE.ShapeGeometry( shapes );
+
+          geometry.computeBoundingBox();
+
+          const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+
+          geometry.translate( xMid, 0, 0 );
+
+          // make shape ( N.B. edge view not visible )
+
+          text = new THREE.Mesh( geometry, matLite );
+          text.position.z = - 2;
+          myScene.add( text );
+
+          // make line shape ( N.B. edge view remains visible )
+
+          const holeShapes = [];
+
+          for ( let i = 0; i < shapes.length; i ++ ) {
+
+              const shape = shapes[ i ];
+
+              if ( shape.holes && shape.holes.length > 0 ) {
+
+                  for ( let j = 0; j < shape.holes.length; j ++ ) {
+
+                      const hole = shape.holes[ j ];
+                      holeShapes.push( hole );
+
+                  }
+
+              }
+
+          }
+
+          shapes.push.apply( shapes, holeShapes );
+
+          lineText = new THREE.Object3D();
+
+          for ( let i = 0; i < shapes.length; i ++ ) {
+
+              const shape = shapes[ i ];
+
+              const points = shape.getPoints();
+              const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+              geometry.translate( xMid, 0, 0 );
+
+              const lineMesh = new THREE.Line( geometry, matDark );
+              lineText.add( lineMesh );
+
+          }
+          text.visible = false;
+          lineText.visible = false;
+          text.rotation.y = 3;
+          lineText.rotation.y = 3;
+          text.position.set(-3, 3, 8.5)
+          lineText.position.set(-2.8, 3, 8.5)
+
+          //myScene.add( lineText );
+
+        });
+
+        const backboard = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1, 2, 4.3),
+          new THREE.MeshBasicMaterial({ 
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.8
+           })
+        )
+        backboard.position.set(-3.3, 2.8, 9)
+        backboard.rotation.y = 1.5
+        myScene.add(backboard)
+
+        //RAYCASTER
+        const myRay = new THREE.Raycaster();
         
         document.addEventListener( 'click', function( event ) {
     
@@ -291,18 +392,15 @@ let myCam, myScene, myRenderer, stats;
              var tiger = myRay.intersectObjects( intersectsTiger );
              var pantera = myRay.intersectObjects( intersectsPantera );
          
-             if ( bear.length > 0 ) {
-                 controls.unlock();
-                 popupBear.style.display = "flex";
-                 popupBear.style.visibility = "visible";
-
-                 document.body.onclick = function(event) {
-                
-                 popupBear.style.display = "none";
-                 popupBear.style.visibility = "hidden";
-                 controls.lock();
-               }
-            }
+             if (bear.length > 0 && text.visible == false) {
+                text.visible = true;
+                lineText.visible = true;
+              }
+            else if (bear.length > 0 && text.visible == true)
+              {
+                text.visible = false;
+                lineText.visible = false;
+              }
             if ( panda.length > 0 )
             {
                 controls.unlock();
@@ -937,17 +1035,23 @@ let myCam, myScene, myRenderer, stats;
       function initPointerLock() {
         controls = new PointerLockControlsCannon(myCam, sphereBody)
         myScene.add(controls.getObject())
+        var buttonEntra = document.getElementById("jogar-btn");
+        var sfondo = document.getElementById("sfondo");
 
-        document.body.addEventListener('click', () => {
+        buttonEntra.addEventListener('click', () => {
           controls.lock()
         })
 
         controls.addEventListener('lock', () => {
           controls.enabled = true
+          sfondo.style.display = "none"
+          sfondo.style.visibility = "hidden"
         })
 
         controls.addEventListener('unlock', () => {
           controls.enabled = false
+          sfondo.style.display = "flex"
+          sfondo.style.visibility = "visible"
         })
       }
 
@@ -1076,7 +1180,7 @@ let myCam, myScene, myRenderer, stats;
         }
 
         controls.update(dt);
-        stats.update();
+        //stats.update();
 
         if (mixers) {
           mixers.map (m => m.update(dt));

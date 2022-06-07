@@ -39,11 +39,14 @@ top:0;
 #benvenuto {
   color: #ffffff;
   text-align: center;
+  user-select: none;
 }
+
 
 #move {
   color: #ffffff;
   text-align: center;
+  user-select: none;
 }
 
 #sfondo {
@@ -84,6 +87,7 @@ top:0;
   font-size: large;
   line-height: 1.5;
   text-align: justify;
+  user-select: none;
 }
 
 nav{
