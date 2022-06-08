@@ -269,25 +269,13 @@ let myCam, myScene, myRenderer, stats;
         myScene.add( cubePantera );
         intersectsPantera.push(cubePantera);
 
-        //POPUPS
-        var popupBear = document.getElementById("popup1Bear");
-        var popupPanda = document.getElementById("popup1Panda");
-        var popupZebra = document.getElementById("popup1Zebra");
-        var popupTiger = document.getElementById("popup1Tiger");
-        var popupPantera = document.getElementById("popup1Pantera");
-
-        //FONT
-        let text, lineText
+        //FONT LOADER
+        let text, text2, text3, text4, text5
 
           const loader2 = new THREE.FontLoader();
           loader2.load( './resources/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
           const color = 0x000000;
-
-          const matDark = new THREE.LineBasicMaterial( {
-              color: color,
-              side: THREE.DoubleSide
-          } );
 
           const matLite = new THREE.MeshBasicMaterial( {
               color: color,
@@ -297,10 +285,22 @@ let myCam, myScene, myRenderer, stats;
           } );
 
           const message = ' Benvenut* in Treeweb! Qui potrai scoprire il nostro mondo\nfatto di immaginazione e creativity.\nPasseggiando tra i viali, potrai incontrare nuovi personaggi\n che ti accompagnerannoalla scoperta dell’universo \ndigitale di cui, ogni giorno, ci occupiamo.\nVisita il playground e l’area cinema e \nguarda le nostre idee crescere e prendere forma.\nVivi un’esperienza all’insegna della creaTREEvity!';
-
+          const message2 = 'Ciao, stiamo terminando questa area,\ntorna presto a trovarci per scoprire\ndi cosa si tratta!';
+          const message3 = 'Ciao! Questo è il playground del mondo TreeWeb,\nmetti in gioco la tua immaginazione e lasciati ispirare!'
+          const message4 = 'Hello! Grazie per essere passato a trovarmi,\nentra pure, il prossimo spettacolo sta per cominciare!'
+          const message5 = 'Ehilà! Fa caldo oggi, eh? Stiamo lavorando a questa nuova area,\ntorna a trovarci per scoprire di cosa si tratta!'
+           
           const shapes = font.generateShapes( message, 0.1 );
+          const shapes2 = font.generateShapes( message2, 0.1 );
+          const shapes3 = font.generateShapes( message3, 0.1 );
+          const shapes4 = font.generateShapes( message4, 0.1 );
+          const shapes5 = font.generateShapes( message5, 0.1 );
 
           const geometry = new THREE.ShapeGeometry( shapes );
+          const geometry2 = new THREE.ShapeGeometry( shapes2 );
+          const geometry3 = new THREE.ShapeGeometry( shapes3 );
+          const geometry4 = new THREE.ShapeGeometry( shapes4 );
+          const geometry5 = new THREE.ShapeGeometry( shapes5 );
 
           geometry.computeBoundingBox();
 
@@ -311,8 +311,34 @@ let myCam, myScene, myRenderer, stats;
           // make shape ( N.B. edge view not visible )
 
           text = new THREE.Mesh( geometry, matLite );
-          text.position.z = - 2;
+          text.visible = false;
+          text.rotation.y = Math.PI - 0.1
+          text.position.set(-3.2, 3.1, 8)
           myScene.add( text );
+
+          text2 = new THREE.Mesh( geometry2, matLite );
+          text2.visible = false;
+          text2.rotation.y = - Math.PI / 2;
+          text2.position.set(30.9, 2.6, -2.9)
+          myScene.add( text2 );
+
+          text3 = new THREE.Mesh( geometry3, matLite );
+          text3.visible = false;
+          text3.rotation.y = Math.PI;
+          text3.position.set(10.8, 3, 29.9)
+          myScene.add( text3 );
+
+          text4 = new THREE.Mesh( geometry4, matLite );
+          text4.visible = false;
+          text4.rotation.y = Math.PI * 2 - 0.2;
+          text4.position.set(2.5, 2.5, -47.2)
+          myScene.add( text4 );
+
+          text5 = new THREE.Mesh( geometry5, matLite );
+          text5.visible = false;
+          text5.rotation.y = Math.PI * 2.5;
+          text5.position.set(-77.9, 3, -6.7)
+          myScene.add( text5 );
 
           // make line shape ( N.B. edge view remains visible )
 
@@ -334,46 +360,73 @@ let myCam, myScene, myRenderer, stats;
               }
 
           }
-
           shapes.push.apply( shapes, holeShapes );
-
-          lineText = new THREE.Object3D();
-
-          for ( let i = 0; i < shapes.length; i ++ ) {
-
-              const shape = shapes[ i ];
-
-              const points = shape.getPoints();
-              const geometry = new THREE.BufferGeometry().setFromPoints( points );
-
-              geometry.translate( xMid, 0, 0 );
-
-              const lineMesh = new THREE.Line( geometry, matDark );
-              lineText.add( lineMesh );
-
-          }
-          text.visible = false;
-          lineText.visible = false;
-          text.rotation.y = 3;
-          lineText.rotation.y = 3;
-          text.position.set(-3, 3, 8.5)
-          lineText.position.set(-2.8, 3, 8.5)
-
-          //myScene.add( lineText );
-
         });
 
         const backboard = new THREE.Mesh(
-          new THREE.BoxGeometry(0.1, 2, 4.3),
+          new THREE.BoxGeometry(0.1, 1.5, 3.8),
           new THREE.MeshBasicMaterial({ 
               color: 0xffffff,
               transparent: true,
               opacity: 0.8
            })
         )
-        backboard.position.set(-3.3, 2.8, 9)
-        backboard.rotation.y = 1.5
+        backboard.position.set(-3.2, 2.6, 8.1)
+        backboard.rotation.y = Math.PI / 2 - 0.1
+        backboard.visible = false;
         myScene.add(backboard)
+
+        const backboard2 = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1, 0.7, 2.5),
+          new THREE.MeshBasicMaterial({ 
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.8
+           })
+        )
+        backboard2.position.set(31, 2.5, -1.8)
+        backboard2.rotation.y = Math.PI
+        backboard2.visible = false;
+        myScene.add(backboard2)
+
+        const backboard3 = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1, 0.6, 3.5),
+          new THREE.MeshBasicMaterial({ 
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.8
+           })
+        )
+        backboard3.position.set(9.2, 3, 30)
+        backboard3.rotation.y = Math.PI / 2
+        backboard3.visible = false;
+        myScene.add(backboard3)
+
+        const backboard4 = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1, 0.7, 4.5),
+          new THREE.MeshBasicMaterial({ 
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.8
+           })
+        )
+        backboard4.position.set(4.5, 2.5, -47)
+        backboard4.rotation.y = Math.PI / 2 - 0.2
+        backboard4.visible = false;
+        myScene.add(backboard4)
+
+        const backboard5 = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1, 0.5, 4.2),
+          new THREE.MeshBasicMaterial({ 
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.8
+           })
+        )
+        backboard5.position.set(-78, 3, -8.7)
+        backboard5.rotation.y = Math.PI
+        backboard5.visible = false;
+        myScene.add(backboard5)
 
         //RAYCASTER
         const myRay = new THREE.Raycaster();
@@ -392,81 +445,56 @@ let myCam, myScene, myRenderer, stats;
              var tiger = myRay.intersectObjects( intersectsTiger );
              var pantera = myRay.intersectObjects( intersectsPantera );
          
-             if (bear.length > 0 && text.visible == false) {
+             if (bear.length > 0 && text.visible == false && backboard.visible == false) {
                 text.visible = true;
-                lineText.visible = true;
+                backboard.visible = true;
               }
-            else if (bear.length > 0 && text.visible == true)
+            else if (bear.length > 0 && text.visible == true && backboard.visible == true)
               {
                 text.visible = false;
-                lineText.visible = false;
+                backboard.visible = false;
               }
-            if ( panda.length > 0 )
+            if (tiger.length > 0 && text2.visible == false && backboard2.visible == false)
             {
-                controls.unlock();
-                 popupPanda.style.display = "flex";
-                 popupPanda.style.visibility = "visible";
-
-                 document.body.onclick = function() {
-                 popupPanda.style.display = "none";
-                 popupPanda.style.visibility = "hidden";
-                 controls.lock();
-               } 
+              text2.visible = true;
+              backboard2.visible = true;
             }
-            if ( zebra.length > 0 )
+            else if (tiger.length > 0 && text2.visible == true && backboard2.visible == true)
+              {
+                text2.visible = false;
+                backboard2.visible = false;
+              }
+            if (zebra.length > 0 && text3.visible == false && backboard3.visible == false)
             {
-              controls.unlock();
-                 popupZebra.style.display = "flex";
-                 popupZebra.style.visibility = "visible";
-
-                 document.body.onclick = function() {
-                 popupZebra.style.display = "none";
-                 popupZebra.style.visibility = "hidden";
-                 controls.lock();
-               } 
+              text3.visible = true;
+              backboard3.visible = true;
             }
-            if ( tiger.length > 0 )
-            {
-              controls.unlock();
-                 popupTiger.style.display = "flex";
-                 popupTiger.style.visibility = "visible";
-
-                 document.body.onclick = function() {
-                 popupTiger.style.display = "none";
-                 popupTiger.style.visibility = "hidden";
-                 controls.lock();
-               } 
-            }
-            if ( pantera.length > 0 )
-            {
-              controls.unlock();
-                 popupPantera.style.display = "flex";
-                 popupPantera.style.visibility = "visible";
-
-                 document.body.onclick = function() {
-                 popupPantera.style.display = "none";
-                 popupPantera.style.visibility = "hidden";
-                 controls.lock();
-               } 
-            } 
+            else if (zebra.length > 0 && text3.visible == true && backboard3.visible == true)
+              {
+                text3.visible = false;
+                backboard3.visible = false;
+              }
+              if (panda.length > 0 && text4.visible == false && backboard4.visible == false)
+              {
+                text4.visible = true;
+                backboard4.visible = true;
+              }
+            else if (panda.length > 0 && text4.visible == true && backboard4.visible == true)
+              {
+                text4.visible = false;
+                backboard4.visible = false;
+              }
+              if (pantera.length > 0 && text5.visible == false && backboard4.visible == false)
+              {
+                text5.visible = true;
+                backboard5.visible = true;
+              }
+            else if (pantera.length > 0 && text5.visible == true && backboard5.visible == true)
+              {
+                text5.visible = false;
+                backboard5.visible = false;
+              }
          }, false );
-
-         document.addEventListener("keypress", function (event) {
-           if(event.key === "Enter")
-           {
-            popupBear.style.display = "none";
-            popupBear.style.visibility = "hidden";
-            popupPanda.style.display = "none";
-            popupPanda.style.visibility = "hidden";
-            popupZebra.style.display = "none";
-            popupZebra.style.visibility = "hidden";
-            popupTiger.style.display = "none";
-            popupTiger.style.visibility = "hidden";
-            popupPantera.style.display = "none";
-            popupPantera.style.visibility = "hidden";
-            controls.lock();
-           }
-         })
       }
       
       function initCannon() {
@@ -1035,8 +1063,9 @@ let myCam, myScene, myRenderer, stats;
       function initPointerLock() {
         controls = new PointerLockControlsCannon(myCam, sphereBody)
         myScene.add(controls.getObject())
-        var buttonEntra = document.getElementById("jogar-btn");
+        var buttonEntra = document.getElementById("desktopmode");
         var sfondo = document.getElementById("sfondo");
+        var divTarget = document.getElementById("divTarget");
 
         buttonEntra.addEventListener('click', () => {
           controls.lock()
@@ -1046,12 +1075,14 @@ let myCam, myScene, myRenderer, stats;
           controls.enabled = true
           sfondo.style.display = "none"
           sfondo.style.visibility = "hidden"
+          divTarget.style.display = "flex"
         })
 
         controls.addEventListener('unlock', () => {
           controls.enabled = false
           sfondo.style.display = "flex"
           sfondo.style.visibility = "visible"
+          divTarget.style.display = "none"
         })
       }
 
@@ -1153,7 +1184,7 @@ let myCam, myScene, myRenderer, stats;
 
 			function animate() {
 
-        NPCOctahedronMesh1.rotation.y +=0.017;         
+        NPCOctahedronMesh1.rotation.y +=0.017;      
         NPCOctahedronMesh2.rotation.y +=0.017;
         NPCOctahedronMesh3.rotation.y +=0.017;
         NPCOctahedronMesh4.rotation.y +=0.017;

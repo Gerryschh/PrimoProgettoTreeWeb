@@ -38,36 +38,33 @@
     </h2>
 
     <h2 id="move">
-      Clicca <img src="./resources/images/Enter.png" height="50" width="120"> per chiudere i popup.
-      </h2>
-
-    <h2 id="move">
     Seleziona la versione in cui vuoi esplorare il mondo cliccando sui pulsanti in basso.
     </h2>
 
     <ul>
-      <li><a data-title="Inizia l'avventura!" id="jogar-btn" onclick=lightBoxClose()>DESKTOP MODE</a></li>
+      <li><a data-title="Inizia l'avventura!" id="desktopmode" onclick=lightBoxClose()>DESKTOP MODE</a></li>
       <br>
-      <li><a href="https://vr-treeweb.vercel.app/" data-title="Prova la Realtà Aumentata!">VR MODE</a></li>
+      <li><a href="https://vr-treeweb.vercel.app/" data-title="Prova la Realtà Aumentata!" id="vrmode">VR MODE</a></li>
     </ul>
   </nav>
   </div>
+
+  <div id="divTarget"></div>
   
   <script type="text/javascript">
-    let divTarget = document.createElement("div")
-          divTarget.style.width = "5px"
-          divTarget.style.height = "5px"
-          divTarget.style.background = "red"
-          divTarget.style.border = "1px solid black"
-          divTarget.style.position = "absolute"
-          divTarget.style.top = "0"
-          divTarget.style.left = "0"
-          divTarget.style.right = "0"
-          divTarget.style.bottom = "0"
-          divTarget.style.margin = "auto"
-          divTarget.style.zIndex= "99"
-          divTarget.style.display = "none"
-          document.body.appendChild(divTarget)
+    let divTarget = document.getElementById("divTarget")
+    divTarget.style.width = "5px"
+    divTarget.style.height = "5px"
+    divTarget.style.background = "red"
+    divTarget.style.border = "1px solid black"
+    divTarget.style.position = "absolute"
+    divTarget.style.top = "0"
+    divTarget.style.left = "0"
+    divTarget.style.right = "0"
+    divTarget.style.bottom = "0"
+    divTarget.style.margin = "auto"
+    divTarget.style.zIndex= "99"
+    divTarget.style.display = "none"
 
     lightBoxClose = function() {
     var sfondo = document.getElementById("sfondo");
@@ -78,50 +75,7 @@
     audio.play();
     }
   </script>
-  <div id="popup1Bear" class="popupSecondari">
-  <nav id="lightboxpopup1">
-  <h1 id="popup1scritta">
-    Benvenut* in Treeweb! Qui potrai scoprire il nostro mondo fatto di immaginazione e creatività. 
-    Passeggiando tra i viali, potrai incontrare nuovi personaggi che ti accompagneranno alla scoperta dell’universo digitale di cui, ogni giorno, ci occupiamo. 
-    Visita il playground e l’area cinema e guarda le nostre idee crescere e prendere forma. 
-    Vivi un’esperienza all’insegna della creaTREEvity! 
-  </h1>
-  </nav>
-  </div>
-
-  <div id="popup1Panda" class="popupSecondari">
-  <nav id="lightboxpopup1">
-  <h1 id="popup1scritta">
-    Hello! Grazie per essere passato a trovarmi, entra pure, il prossimo spettacolo sta per cominciare!
-  </h1>
-  </nav>
-  </div>
-
-  <div id="popup1Zebra" class="popupSecondari">
-    <nav id="lightboxpopup1">
-    <h1 id="popup1scritta">
-      Ciao! Questo e' il playground del mondo TreeWeb, metti in gioco la tua immaginazione e lasciati ispirare!
-    </h1>
-    </nav>
-    </div>
-
-    <div id="popup1Tiger" class="popupSecondari">
-      <nav id="lightboxpopup1">
-      <h1 id="popup1scritta">
-        Ciao, stiamo terminando questa area, torna presto a trovarci per scoprire di cosa si tratta!
-      </h1>
-      </nav>
-      </div>
-
-      <div id="popup1Pantera" class="popupSecondari">
-        <nav id="lightboxpopup1">
-        <h1 id="popup1scritta">
-          Ehila'! Fa caldo oggi, eh? Stiamo lavorando a questa nuova area, torna a trovarci per scoprire di cosa si tratta!
-        </h1>
-        </nav>
-        </div>
-
-
+  
   <script type="text/javascript">
     popupclose1 = function() {
       var popup1 = document.getElementById("popup1");
