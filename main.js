@@ -313,7 +313,7 @@ let myCam, myScene, myRenderer, stats;
           text = new THREE.Mesh( geometry, matLite );
           text.visible = false;
           text.rotation.y = Math.PI - 0.1
-          text.position.set(-3.2, 3.1, 8)
+          text.position.set(-3.2, 3.4, 8)
           myScene.add( text );
 
           text2 = new THREE.Mesh( geometry2, matLite );
@@ -371,7 +371,7 @@ let myCam, myScene, myRenderer, stats;
               opacity: 0.8
            })
         )
-        backboard.position.set(-3.2, 2.6, 8.1)
+        backboard.position.set(-3.2, 2.9, 8.1)
         backboard.rotation.y = Math.PI / 2 - 0.1
         backboard.visible = false;
         myScene.add(backboard)
@@ -514,7 +514,7 @@ let myCam, myScene, myRenderer, stats;
         // use this to test non-split solver
         // world.solver = solver
 
-        world.gravity.set(0, -45, 0)
+        world.gravity.set(0, -80, 0)
 
         // Create a slippery material (friction coefficient = 0.0)
         physicsMaterial = new CANNON.Material('physics')
@@ -529,7 +529,7 @@ let myCam, myScene, myRenderer, stats;
         // Create the user collision sphere
         
         sphereShape = new CANNON.Sphere(2)
-        sphereBody = new CANNON.Body({ mass: 5, material: physicsMaterial })
+        sphereBody = new CANNON.Body({ mass: 10, material: physicsMaterial })
         sphereBody.addShape(sphereShape)
         sphereBody.position.set(0, 6, 0)
         sphereBody.linearDamping = 0.9
@@ -540,40 +540,40 @@ let myCam, myScene, myRenderer, stats;
         const groundBody = new CANNON.Body({ mass: 0, material: physicsMaterial })
         groundBody.addShape(groundShape)
         groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
-        groundBody.position.set(0, -0.01, 0)
+        groundBody.position.set(0, -0.1, 0)
         world.addBody(groundBody)
 
         // Add fence shape 
-        const fence = new CANNON.Vec3(12, 4, 1)
+        const fence = new CANNON.Vec3(12, 1, 1)
         const fenceShape = new CANNON.Box(fence)
         const fenceGeometry = new THREE.BoxBufferGeometry(fence.x *2 , fence.y *2, fence.z *2)
 
         // Add fence + bridge shape 
-        const fbridge = new CANNON.Vec3(27, 4, 1)
+        const fbridge = new CANNON.Vec3(27, 1, 1)
         const fbridgeShape = new CANNON.Box(fbridge)
         const fbridgeGeometry = new THREE.BoxBufferGeometry(fbridge.x *2 , fbridge.y *2, fbridge.z *2)
 
         //Box for house
-        const casa = new CANNON.Vec3(5, 5, 5)
+        const casa = new CANNON.Vec3(5, 1, 5)
         const casaShape = new CANNON.Box(casa)
         const casaGeometry = new THREE.BoxBufferGeometry(casa.x *2 , casa.y *2, casa.z *2)
 
         //Box for tree (waterzone)
-        const albero = new CANNON.Vec3(3, 3, 3)
+        const albero = new CANNON.Vec3(3, 1, 3)
         const alberoShape = new CANNON.Box(albero)
         const alberoGeometry = new THREE.BoxBufferGeometry(albero.x *2 , albero.y *2, albero.z *2)
 
         // Add waterzone hitboxes
-        const muroWater = new CANNON.Vec3(7, 4, 1)
+        const muroWater = new CANNON.Vec3(7, 1, 1)
         const muroWaterShape = new CANNON.Box(muroWater)
         const muroWaterGeometry = new THREE.BoxBufferGeometry(muroWater.x *2 , muroWater.y *2, muroWater.z *2)
 
-        const muroWaterBig = new CANNON.Vec3(16, 4, 1)
+        const muroWaterBig = new CANNON.Vec3(16, 1, 1)
         const muroWaterShapeBig = new CANNON.Box(muroWaterBig)
         const muroWaterGeometryBig = new THREE.BoxBufferGeometry(muroWaterBig.x *2 , muroWaterBig.y *2, muroWaterBig.z *2)
 
         // Hitbox to close the road
-        const cubeClose = new CANNON.Vec3(1.5, 3, 1.5)
+        const cubeClose = new CANNON.Vec3(1.5, 1, 1.5)
         const cubeShape = new CANNON.Box(cubeClose)
         const cubeGeometry = new THREE.BoxBufferGeometry(cubeClose.x *2, cubeClose.y *2, cubeClose.z *2)
         
@@ -690,7 +690,7 @@ let myCam, myScene, myRenderer, stats;
         boxMeshes.push(muroMesh8) 
  
         //Trasversal walls in cinema zone 
-        const cinema = new CANNON.Vec3(8, 4, 1) 
+        const cinema = new CANNON.Vec3(8, 1, 1) 
         const cinemaShape = new CANNON.Box(cinema) 
         const cinemaGeometry = new THREE.BoxBufferGeometry(cinema.x *2 , cinema.y *2, cinema.z *2) 
  
@@ -719,7 +719,7 @@ let myCam, myScene, myRenderer, stats;
         boxMeshes.push(muroMesh10) 
  
  
-        const cinema2 = new CANNON.Vec3(7.5, 4, 1) 
+        const cinema2 = new CANNON.Vec3(7.5, 1, 1) 
         const cinemaShape2 = new CANNON.Box(cinema2) 
         const cinemaGeometry2 = new THREE.BoxBufferGeometry(cinema2.x *2 , cinema2.y *2, cinema2.z *2) 
  
@@ -736,11 +736,11 @@ let myCam, myScene, myRenderer, stats;
  
          
         //Trasversal walls in center zone 
-        const piazza = new CANNON.Vec3(2, 4, 0.3) 
+        const piazza = new CANNON.Vec3(2, 1, 0.3) 
         const piazzaShape = new CANNON.Box(piazza) 
         const piazzaGeometry = new THREE.BoxBufferGeometry(piazza.x *2 , piazza.y *2, piazza.z *2) 
  
-        const piazzatwo = new CANNON.Vec3(3, 4, 0.3) 
+        const piazzatwo = new CANNON.Vec3(3, 1, 0.3) 
         const piazzaShapetwo = new CANNON.Box(piazzatwo) 
         const piazzaGeometrytwo = new THREE.BoxBufferGeometry(piazzatwo.x *2 , piazzatwo.y *2, piazzatwo.z *2) 
  
@@ -780,7 +780,7 @@ let myCam, myScene, myRenderer, stats;
         boxes.push(piazza3) 
         boxMeshes.push(piazzaMesh3)
 
-        const piazzathree = new CANNON.Vec3(4.4, 4, 0.3) 
+        const piazzathree = new CANNON.Vec3(4.4, 1, 0.3) 
         const piazzaShapethree = new CANNON.Box(piazzathree) 
         const piazzaGeometrythree = new THREE.BoxBufferGeometry(piazzathree.x *2 , piazzathree.y *2, piazzathree.z *2) 
 
